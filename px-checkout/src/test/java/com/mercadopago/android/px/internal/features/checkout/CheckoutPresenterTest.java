@@ -521,9 +521,7 @@ public class CheckoutPresenterTest {
         final MercadoPagoError mercadoPagoError = mock(MercadoPagoError.class);
         when(mercadoPagoError.isPaymentProcessing()).thenReturn(true);
         when(paymentRepository.getPaymentDataList()).thenReturn(mock(List.class));
-        final CheckoutPreference checkoutPreference = mock(CheckoutPreference.class);
-        when(paymentSettingRepository.getCheckoutPreference()).thenReturn(checkoutPreference);
-        when(checkoutPreference.getSite()).thenReturn(Sites.ARGENTINA);
+        when(paymentSettingRepository.getSite()).thenReturn(Sites.ARGENTINA);
         presenter.onPaymentError(mercadoPagoError);
 
         verify(checkoutView).fetchFonts();

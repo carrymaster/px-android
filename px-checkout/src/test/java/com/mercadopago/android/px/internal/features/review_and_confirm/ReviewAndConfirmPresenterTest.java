@@ -348,9 +348,7 @@ public class ReviewAndConfirmPresenterTest {
     }
 
     private void verifyOnPaymentError(@NonNull final MercadoPagoError mercadoPagoError) {
-        final CheckoutPreference checkoutPreference = mock(CheckoutPreference.class);
-        when(paymentSettingRepository.getCheckoutPreference()).thenReturn(checkoutPreference);
-        when(checkoutPreference.getSite()).thenReturn(Sites.ARGENTINA);
+        when(paymentSettingRepository.getSite()).thenReturn(Sites.ARGENTINA);
         reviewAndConfirmPresenter.onPaymentError(mercadoPagoError);
         verify(view).cancelLoadingButton();
         verify(view).showConfirmButton();
@@ -358,12 +356,10 @@ public class ReviewAndConfirmPresenterTest {
 
     private void whenIPaymentAndAnimationIsFinishedThenShowResult(final IPaymentDescriptor payment) {
         final PaymentResult paymentResult = mock(PaymentResult.class);
-        final CheckoutPreference checkoutPreference = mock(CheckoutPreference.class);
         when(paymentResult.getPaymentData()).thenReturn(mock(PaymentData.class));
         when(paymentRepository.getPayment()).thenReturn(payment);
         when(paymentRepository.createPaymentResult(payment)).thenReturn(paymentResult);
-        when(paymentSettingRepository.getCheckoutPreference()).thenReturn(checkoutPreference);
-        when(checkoutPreference.getSite()).thenReturn(Sites.ARGENTINA);
+        when(paymentSettingRepository.getSite()).thenReturn(Sites.ARGENTINA);
         doCallRealMethod().when(paymentRewardRepository).getPaymentReward(any(), any(), any());
 
         reviewAndConfirmPresenter.hasFinishPaymentAnimation();

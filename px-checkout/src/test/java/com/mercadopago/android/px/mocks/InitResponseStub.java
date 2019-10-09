@@ -2,31 +2,41 @@ package com.mercadopago.android.px.mocks;
 
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.internal.util.JsonUtil;
-import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.internal.InitResponse;
 import com.mercadopago.android.px.utils.ResourcesUtil;
-import java.util.Collection;
+import java.util.Arrays;
 
-public enum InitResponseStub {
-    FULL(ResponseSiteStub.MLA);
+public enum InitResponseStub implements JsonStub<InitResponse> {
+    FULL(ResponseSiteStub.MLA, CheckoutPreferenceStub.DEFAULT, PaymentMethodStub.values(),
+        PaymentMethodSearchItemStub.values(), CustomSearchItemStub.values(), ExpressMetadataStub.values());
 
-    @NonNull private final Injectable[] injectableStubs;
+    @NonNull private String json = ResourcesUtil.getStringResource("init_response_template.json");
 
-    InitResponseStub(@NonNull final Injectable... injectableStubs) {
-        this.injectableStubs = injectableStubs;
+    @SuppressWarnings("TypeMayBeWeakened")
+    InitResponseStub(@NonNull final ResponseSiteStub responseSiteStub,
+        @NonNull final CheckoutPreferenceStub checkoutPreferenceStub,
+        @NonNull final PaymentMethodStub[] paymentMethodStubs,
+        @NonNull final PaymentMethodSearchItemStub[] paymentMethodSearchItemStubs,
+        @NonNull final CustomSearchItemStub[] customSearchItemStubs,
+        @NonNull final ExpressMetadataStub[] expressMetadataStubs) {
+
+        json = responseSiteStub.inject(json);
+        json = checkoutPreferenceStub.inject(json);
+        json = ListJsonInjector.injectAll(Arrays.asList(paymentMethodStubs).iterator(), json);
+        json = ListJsonInjector.injectAll(Arrays.asList(paymentMethodSearchItemStubs).iterator(), json);
+        json = ListJsonInjector.injectAll(Arrays.asList(customSearchItemStubs).iterator(), json);
+        json = ListJsonInjector.injectAll(Arrays.asList(expressMetadataStubs).iterator(), json);
     }
 
+    @NonNull
+    @Override
     public InitResponse get() {
-        String json = ResourcesUtil.getStringResource("init_response_template.json");
-        for (final Injectable stub : injectableStubs) {
-            json = stub.inject(json);
-        }
-        final InitResponse initResponse = JsonUtil.getInstance().fromJson(json, InitResponse.class);
-        populatePaymentMethods(initResponse.getPaymentMethods());
-        return initResponse;
+        return JsonUtil.getInstance().fromJson(json, InitResponse.class);
     }
 
-    private void populatePaymentMethods(@NonNull final Collection<PaymentMethod> paymentMethods) {
-        paymentMethods.addAll(PaymentMethodStub.getAll(null));
+    @NonNull
+    @Override
+    public String getJson() {
+        return json;
     }
 }

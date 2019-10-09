@@ -26,7 +26,7 @@ public class AccountMoneyDisplayInfo implements Serializable, Parcelable {
         return 0;
     }
 
-    public static final Creator<AccountMoneyDisplayInfo> CREATOR = new Creator<AccountMoneyDisplayInfo>() {
+    public static final Creator<AccountMoneyDisplayInfo> CREATORA = new Creator<AccountMoneyDisplayInfo>() {
         @Override
         public AccountMoneyDisplayInfo createFromParcel(Parcel in) {
             return new AccountMoneyDisplayInfo(in);

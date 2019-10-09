@@ -74,11 +74,12 @@ public final class PaymentMethodSearchs {
     }
 
     private static InitResponse getPaymentMethodSearch(final String json) {
-        final String siteJson =
-            String.format(ResourcesUtil.getStringResource("response_site_template.json"), Sites.ARGENTINA.getId());
-        final String preferenceJson = JsonUtil.getInstance().toJson(stubExpiredPreference());
-        final String initJson = String.format(json, siteJson, preferenceJson);
-        return JsonUtil.getInstance().fromJson(initJson, InitResponse.class);
+        //final String siteJson =
+        //    String.format(ResourcesUtil.getStringResource("response_site_template.json"), Sites.ARGENTINA.getId());
+        //final String preferenceJson = JsonUtil.getInstance().toJson(stubExpiredPreference());
+        //final String initJson = String.format(json, siteJson, preferenceJson);
+        //return JsonUtil.getInstance().fromJson(initJson, InitResponse.class);
+        return InitResponseStub.FULL.get();
     }
 
     private static CheckoutPreference stubExpiredPreference() {
