@@ -3,6 +3,8 @@ package com.mercadopago.android.px.internal.datasource;
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.internal.callbacks.MPCall;
+import com.mercadopago.android.px.internal.core.ProductIdProvider;
+import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.SummaryAmountRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
@@ -25,15 +27,18 @@ public class SummaryAmountService implements SummaryAmountRepository {
     @NonNull private final PaymentSettingRepository paymentSettingRepository;
     @NonNull private final AdvancedConfiguration advancedConfiguration;
     @NonNull private final UserSelectionRepository userSelectionRepository;
+    @NonNull private final ProductIdProvider productIdProvider;
 
     public SummaryAmountService(@NonNull final InstallmentService installmentService,
         @NonNull final PaymentSettingRepository paymentSettingRepository,
         @NonNull final AdvancedConfiguration advancedConfiguration,
-        @NonNull final UserSelectionRepository userSelectionRepository) {
+        @NonNull final UserSelectionRepository userSelectionRepository,
+        @NonNull final ProductIdProvider productIdProvider) {
         this.installmentService = installmentService;
         this.paymentSettingRepository = paymentSettingRepository;
         this.advancedConfiguration = advancedConfiguration;
         this.userSelectionRepository = userSelectionRepository;
+        this.productIdProvider = productIdProvider;
     }
 
     @NonNull
@@ -52,7 +57,7 @@ public class SummaryAmountService implements SummaryAmountRepository {
         if (TextUtil.isNotEmpty(checkoutPreference.getPayer().getEmail())) {
             body.put("email", checkoutPreference.getPayer().getEmail());
         }
-        body.put("product_id", advancedConfiguration.getDiscountParamsConfiguration().getProductId());
+        body.put("product_id", productIdProvider.getProductId());
         body.put("payment_method_id", paymentMethod.getId());
         body.put("payment_type", paymentMethod.getPaymentTypeId());
         body.put("bin", bin);

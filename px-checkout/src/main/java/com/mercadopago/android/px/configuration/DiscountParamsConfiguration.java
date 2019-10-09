@@ -28,10 +28,9 @@ public final class DiscountParamsConfiguration implements Serializable {
     }
 
     /**
-     * Let us know what the product id is
-     *
-     * @return product id
+     * @deprecated use productId in Advanced Configuration
      */
+    @Deprecated
     @Nullable
     public String getProductId() {
         return productId;
@@ -59,11 +58,9 @@ public final class DiscountParamsConfiguration implements Serializable {
         }
 
         /**
-         * Payment product id let us to enable discounts for the product id specified.
-         *
-         * @param productId payment product id.
-         * @return builder to keep operating.
+         * @deprecated use productId in Advanced Configuration
          */
+        @Deprecated
         public Builder setProductId(@NonNull final String productId) {
             this.productId = productId;
             return this;

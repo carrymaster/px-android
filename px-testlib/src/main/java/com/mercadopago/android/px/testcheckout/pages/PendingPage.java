@@ -26,7 +26,7 @@ public class PendingPage extends PageObject<CheckoutValidator> {
     }
 
     public boolean isPending() {
-        onView(withId(com.mercadopago.android.px.R.id.headerContainer))
+        onView(withId(com.mercadopago.android.px.R.id.header))
             .check(matches(withBackgroundColor(
                 InstrumentationRegistry.getTargetContext().getResources()
                     .getColor(com.mercadopago.android.px.R.color.ui_components_warning_color))));

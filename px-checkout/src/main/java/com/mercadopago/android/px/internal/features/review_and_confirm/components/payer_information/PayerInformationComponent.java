@@ -15,30 +15,27 @@ import com.mercadopago.android.px.internal.view.CompactComponent;
 import com.mercadopago.android.px.internal.view.MPTextView;
 import com.mercadopago.android.px.model.IdentificationType;
 import com.mercadopago.android.px.model.Payer;
-import javax.annotation.Nonnull;
 
 public class PayerInformationComponent extends CompactComponent<Payer, PayerInformationComponent.Actions> {
-    @Nonnull private final Context context;
 
     public interface Actions {
         void onModifyPayerInformationClicked();
     }
 
-    public PayerInformationComponent(@NonNull final Payer props, @Nonnull final Context context,
-        @Nonnull final Actions actions) {
+    public PayerInformationComponent(@NonNull final Payer props, @NonNull final Actions actions) {
         super(props, actions);
-        this.context = context;
     }
 
     @Override
-    public View render(@Nonnull final ViewGroup parent) {
+    public View render(@NonNull final ViewGroup parent) {
+        final Context context = parent.getContext();
         final ViewGroup payerInfoView = (ViewGroup) ViewUtils.inflate(parent, R.layout.px_payer_information);
         final MPTextView docTypeAndNumber = payerInfoView.findViewById(R.id.payer_doc_type_and_number);
         final MPTextView payerAppellation = payerInfoView.findViewById(R.id.payer_appellation);
         final ImageView icon = payerInfoView.findViewById(R.id.icon);
 
-        ViewUtils.loadOrGone(getIdentificationTypeAndNumber(), docTypeAndNumber);
-        ViewUtils.loadOrGone(getPayerAppellation(), payerAppellation);
+        ViewUtils.loadOrGone(getIdentificationTypeAndNumber(context), docTypeAndNumber);
+        ViewUtils.loadOrGone(getPayerAppellation(context), payerAppellation);
         drawIconFromRes(icon, R.drawable.px_payer_information);
         drawModifyButton(payerInfoView);
 
@@ -47,18 +44,15 @@ public class PayerInformationComponent extends CompactComponent<Payer, PayerInfo
 
     private void drawModifyButton(@NonNull final ViewGroup payerInfoView) {
         final MeliButton buttonLink = payerInfoView.findViewById(R.id.payer_information_modify_button);
-        buttonLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                if (getActions() != null) {
-                    getActions().onModifyPayerInformationClicked();
-                }
+        buttonLink.setOnClickListener(v -> {
+            if (getActions() != null) {
+                getActions().onModifyPayerInformationClicked();
             }
         });
     }
 
     @NonNull
-    private String getPayerAppellation() {
+    private String getPayerAppellation(@NonNull final Context context) {
         //Business name is first name in v1/payments
         if (TextUtil.isEmpty(props.getLastName())) {
             return props.getFirstName().toUpperCase();
@@ -70,7 +64,7 @@ public class PayerInformationComponent extends CompactComponent<Payer, PayerInfo
     }
 
     @NonNull
-    private String getIdentificationTypeAndNumber() {
+    private String getIdentificationTypeAndNumber(@NonNull final Context context) {
         final int res = R.string.px_payer_information_identification_type_and_number;
         final IdentificationType identificationType = new IdentificationType();
         identificationType.setId(props.getIdentification().getType());
@@ -86,7 +80,7 @@ public class PayerInformationComponent extends CompactComponent<Payer, PayerInfo
         return context.getString(res, identificationType.getId(), maskedNumber);
     }
 
-    private void drawIconFromRes(@Nonnull final ImageView imageView, @DrawableRes final int resource) {
+    private void drawIconFromRes(@NonNull final ImageView imageView, @DrawableRes final int resource) {
         imageView.setImageResource(resource);
     }
 }

@@ -10,7 +10,6 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mercadopago.android.px.internal.util.TextUtil;
 
@@ -53,14 +52,6 @@ public abstract class Renderer<T extends Component> {
 
     protected View inflate(@LayoutRes final int layout, @Nullable final ViewGroup parent) {
         return LayoutInflater.from(context).inflate(layout, parent);
-    }
-
-    public void wrapHeight(@NonNull final ViewGroup viewGroup) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        viewGroup.setLayoutParams(params);
     }
 
     protected void setText(@NonNull final TextView view, @StringRes final int resource) {

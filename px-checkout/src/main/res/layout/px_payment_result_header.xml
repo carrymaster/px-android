@@ -1,51 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:id="@+id/headerContainer"
-             xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             tools:background="@color/ui_components_success_color">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="android.support.constraint.ConstraintLayout"
+    tools:background="@color/ui_components_success_color">
 
-    <LinearLayout
+    <com.mercadopago.android.px.internal.view.ToolbarCancel
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/px_xxxl_margin">
+        android:layout_height="@dimen/px_toolbar_height"
+        android:theme="@style/ToolbarTransparentTheme"
+        tools:navigationIcon="@drawable/ic_close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <FrameLayout
-            android:id="@+id/iconContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/px_m_alternative_margin"
-            android:paddingLeft="@dimen/px_m_alternative_margin"
-            android:paddingRight="@dimen/px_m_alternative_margin"
-            android:paddingStart="@dimen/px_m_alternative_margin"/>
+    <include layout="@layout/px_icon"
+        android:id="@+id/icon_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/label"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/px_xxl_height"
+        android:layout_margin="@dimen/px_xs_alternative_1_margin"/>
 
-        <com.mercadopago.android.px.internal.view.MPTextView
-            android:id="@+id/mpsdkHeaderLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/px_xs_margin"
-            android:layout_marginRight="@dimen/px_xs_margin"
-            android:layout_marginTop="@dimen/px_xxs_margin"
-            android:gravity="center_horizontal"
-            android:textColor="@color/px_white"
-            android:textSize="@dimen/px_s_text"
-            tools:text="Lorem ipsum dolor sit Lorem ipsum dolor sit Lorem ipsum dolor sit "/>
+    <com.mercadopago.android.px.internal.view.MPTextView
+        android:id="@+id/label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/px_xs_margin"
+        android:layout_marginEnd="@dimen/px_xs_margin"
+        android:layout_marginTop="@dimen/px_xxs_margin"
+        android:gravity="center_horizontal"
+        android:textColor="@color/px_white"
+        android:textSize="@dimen/px_s_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/icon_container"
+        app:layout_constraintBottom_toTopOf="@id/title"
+        tools:text="Lorem ipsum dolor sit Lorem ipsum dolor sit Lorem ipsum dolor sit "/>
 
-        <com.mercadopago.android.px.internal.view.MPTextView
-            android:id="@+id/mpsdkHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/px_xs_margin"
-            android:layout_marginRight="@dimen/px_xs_margin"
-            android:layout_marginTop="@dimen/px_s_margin"
-            android:gravity="center_horizontal"
-            android:textColor="@color/px_white"
-            android:textSize="@dimen/px_xxxl_text"
-            tools:text="¡Listo, se acreditó tu pago! Lorem ipsum dolor sit  Lorem ipsum dolor sit"/>
-
-    </LinearLayout>
-
-</FrameLayout>
+    <com.mercadopago.android.px.internal.view.MPTextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/px_xs_margin"
+        android:layout_marginEnd="@dimen/px_xs_margin"
+        android:layout_marginTop="@dimen/px_s_margin"
+        android:layout_marginBottom="@dimen/px_xxxl_margin"
+        android:gravity="center_horizontal"
+        android:textColor="@color/px_white"
+        android:textSize="@dimen/px_xxxl_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="¡Listo, se acreditó tu pago! Lorem ipsum dolor sit  Lorem ipsum dolor sit"/>
+</merge>

@@ -1,58 +1,69 @@
 package com.mercadopago.android.px.internal.features.review_and_confirm;
 
 import android.support.annotation.NonNull;
+import com.mercadopago.android.px.addons.ESCManagerBehaviour;
+import com.mercadopago.android.px.addons.model.SecurityValidationData;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
 import com.mercadopago.android.px.internal.base.BasePresenter;
 import com.mercadopago.android.px.internal.callbacks.FailureRecovery;
-import com.mercadopago.android.px.internal.datasource.IESCManager;
+import com.mercadopago.android.px.internal.core.ProductIdProvider;
 import com.mercadopago.android.px.internal.features.explode.ExplodeDecoratorMapper;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
+import com.mercadopago.android.px.internal.repository.PaymentRewardRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
+import com.mercadopago.android.px.internal.util.SecurityValidationDataFactory;
+import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.PayButtonViewModel;
+import com.mercadopago.android.px.internal.viewmodel.PaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.PostPaymentAction;
-import com.mercadopago.android.px.internal.viewmodel.mappers.BusinessModelMapper;
 import com.mercadopago.android.px.internal.viewmodel.mappers.PayButtonViewModelMapper;
 import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.IPaymentDescriptor;
+import com.mercadopago.android.px.model.IPaymentDescriptorHandler;
 import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.PaymentRecovery;
 import com.mercadopago.android.px.model.PaymentResult;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
+import com.mercadopago.android.px.model.internal.PaymentReward;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.tracking.internal.events.ChangePaymentMethodEvent;
 import com.mercadopago.android.px.tracking.internal.events.ConfirmEvent;
+import com.mercadopago.android.px.tracking.internal.events.FrictionEventTracker;
 import com.mercadopago.android.px.tracking.internal.views.ReviewAndConfirmViewTracker;
 import java.util.Set;
 
 /* default */ final class ReviewAndConfirmPresenter extends BasePresenter<ReviewAndConfirm.View>
     implements ReviewAndConfirm.Action {
 
-    @NonNull /* default */ final PaymentRepository paymentRepository;
-    @NonNull private final BusinessModelMapper businessModelMapper;
     @NonNull private final PaymentSettingRepository paymentSettings;
+    @NonNull private final UserSelectionRepository userSelectionRepository;
+    @NonNull private final PaymentRewardRepository paymentRewardRepository;
+    @NonNull private final ProductIdProvider productIdProvider;
+    @NonNull /* default */ final PaymentRepository paymentRepository;
     private final ExplodeDecoratorMapper explodeDecoratorMapper;
     private final ReviewAndConfirmViewTracker reviewAndConfirmViewTracker;
     private final ConfirmEvent confirmEvent;
-    private final UserSelectionRepository userSelectionRepository;
-    private FailureRecovery recovery;
     private final PayButtonViewModel payButtonViewModel;
+    private FailureRecovery recovery;
 
     /* default */ ReviewAndConfirmPresenter(@NonNull final PaymentRepository paymentRepository,
-        @NonNull final BusinessModelMapper businessModelMapper,
         @NonNull final DiscountRepository discountRepository,
         @NonNull final PaymentSettingRepository paymentSettings,
         @NonNull final UserSelectionRepository userSelectionRepository,
-        @NonNull final IESCManager IESCManager) {
-        final Set<String> escCardIds = IESCManager.getESCCardIds();
+        @NonNull final PaymentRewardRepository paymentRewardRepository,
+        @NonNull final ESCManagerBehaviour escManagerBehaviour,
+        @NonNull final ProductIdProvider productIdProvider) {
         this.paymentRepository = paymentRepository;
-        this.businessModelMapper = businessModelMapper;
         this.paymentSettings = paymentSettings;
         this.userSelectionRepository = userSelectionRepository;
+        this.paymentRewardRepository = paymentRewardRepository;
+        this.productIdProvider = productIdProvider;
 
+        final Set<String> escCardIds = escManagerBehaviour.getESCCardIds();
         explodeDecoratorMapper = new ExplodeDecoratorMapper();
         reviewAndConfirmViewTracker =
             new ReviewAndConfirmViewTracker(escCardIds, userSelectionRepository, paymentSettings,
@@ -79,11 +90,28 @@ import java.util.Set;
     @Override
     public void hasFinishPaymentAnimation() {
         final IPaymentDescriptor payment = paymentRepository.getPayment();
-        if (payment instanceof BusinessPayment) {
-            getView().showResult(businessModelMapper.map((BusinessPayment) payment));
-        } else {
-            getView().showResult(paymentRepository.createPaymentResult(payment));
-        }
+        paymentRewardRepository.getPaymentReward(payment, paymentRepository.createPaymentResult(payment),
+            this::handleResult);
+    }
+
+    private void handleResult(@NonNull final IPaymentDescriptor payment, @NonNull final PaymentResult paymentResult,
+        @NonNull final PaymentReward paymentReward) {
+        final String currencyId = paymentSettings.getSite().getCurrencyId();
+        payment.process(new IPaymentDescriptorHandler() {
+            @Override
+            public void visit(@NonNull final IPaymentDescriptor payment) {
+                final PaymentModel paymentModel =
+                    new PaymentModel(payment, paymentResult, paymentReward, currencyId);
+                getView().showResult(paymentModel);
+            }
+
+            @Override
+            public void visit(@NonNull final BusinessPayment businessPayment) {
+                final BusinessPaymentModel paymentModel =
+                    new BusinessPaymentModel((BusinessPayment) payment, paymentResult, paymentReward, currencyId);
+                getView().showResult(paymentModel);
+            }
+        });
     }
 
     @Override
@@ -111,9 +139,24 @@ import java.util.Set;
     }
 
     @Override
+    public void startSecuredPayment() {
+        final SecurityValidationData data =
+            SecurityValidationDataFactory.create(productIdProvider, paymentSettings, userSelectionRepository);
+        getView().startSecurityValidation(data);
+    }
+
+    @Override
     public void onPaymentConfirm() {
         confirmEvent.track();
         pay();
+    }
+
+    @Override
+    public void trackSecurityFriction() {
+        // TODO Review ID
+        FrictionEventTracker
+            .with(ReviewAndConfirmViewTracker.PATH, FrictionEventTracker.Id.GENERIC,
+                FrictionEventTracker.Style.CUSTOM_COMPONENT).track();
     }
 
     /* default */ void pay() {
@@ -179,21 +222,17 @@ import java.util.Set;
         getView().cancelLoadingButton();
         getView().showConfirmButton();
 
-        recovery = new FailureRecovery() {
-            @Override
-            public void recover() {
-                pay();
-            }
-        };
-
+        recovery = this::pay;
         if (error.isPaymentProcessing()) {
+            final String currencyId = paymentSettings.getSite().getCurrencyId();
             final PaymentResult paymentResult =
                 new PaymentResult.Builder()
                     .setPaymentData(paymentRepository.getPaymentDataList())
                     .setPaymentStatus(Payment.StatusCodes.STATUS_IN_PROCESS)
                     .setPaymentStatusDetail(Payment.StatusDetail.STATUS_DETAIL_PENDING_CONTINGENCY)
                     .build();
-            getView().showResult(paymentResult);
+            final PaymentModel paymentModel = new PaymentModel(null, paymentResult, PaymentReward.EMPTY, currencyId);
+            getView().showResult(paymentModel);
         } else if (error.isInternalServerError() || error.isNoConnectivityError()) {
             getView().showErrorSnackBar(error);
         } else {

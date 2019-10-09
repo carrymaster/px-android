@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.features.TermsAndConditionsActivity;
-import com.mercadopago.android.px.internal.features.paymentresult.components.LineSeparator;
+import com.mercadopago.android.px.internal.features.payment_result.components.LineSeparator;
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.TermsAndConditionsModel;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 
@@ -31,12 +31,7 @@ public class TermsAndConditionsComponent extends CompactComponent<TermsAndCondit
         mTermsAndConditionsMessageView.setText(props.getMessage());
         mTermsAndConditionsLinkView.setText(props.getMessageLinked());
 
-        termsAndConditionsView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                TermsAndConditionsActivity.start(context, props.getUrl());
-            }
-        });
+        termsAndConditionsView.setOnClickListener(view -> TermsAndConditionsActivity.start(context, props.getUrl()));
 
         final LineSeparator lineSeparator = new LineSeparator(new LineSeparator.Props(R.color.px_med_light_gray));
 

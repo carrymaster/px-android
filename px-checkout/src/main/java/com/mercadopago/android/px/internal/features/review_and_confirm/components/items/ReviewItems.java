@@ -14,35 +14,31 @@ import com.mercadopago.android.px.internal.features.review_and_confirm.models.It
 import com.mercadopago.android.px.internal.view.CompactComponent;
 import com.mercadopago.android.px.internal.view.Renderer;
 import com.mercadopago.android.px.internal.view.RendererFactory;
-import javax.annotation.Nonnull;
 
 public class ReviewItems extends CompactComponent<ReviewItems.Props, Void> {
 
-    public static class Props {
+    public static final class Props {
+        /* default */ final ItemsModel itemsModel;
+        /* default */ final Integer collectorIcon;
+        /* default */ final String quantityLabel;
+        /* default */ final String unitPriceLabel;
 
-        public ItemsModel getItemsModel() {
-            return itemsModel;
-        }
-
-        final ItemsModel itemsModel;
-
-        @Nullable
-        public Integer getCollectorIcon() {
-            return collectorIcon;
-        }
-
-        @DrawableRes final Integer collectorIcon;
-        final String quantityLabel;
-        final String unitPriceLabel;
-
-        public Props(final ItemsModel itemsModel,
-            @Nullable @DrawableRes final Integer collectorIcon,
+        public Props(final ItemsModel itemsModel, @Nullable @DrawableRes final Integer collectorIcon,
             final String quantityLabel,
             final String unitPriceLabel) {
             this.itemsModel = itemsModel;
             this.collectorIcon = collectorIcon;
             this.quantityLabel = quantityLabel;
             this.unitPriceLabel = unitPriceLabel;
+        }
+
+        /* default */ ItemsModel getItemsModel() {
+            return itemsModel;
+        }
+
+        @Nullable
+        /* default */ Integer getCollectorIcon() {
+            return collectorIcon;
         }
     }
 
@@ -51,11 +47,11 @@ public class ReviewItems extends CompactComponent<ReviewItems.Props, Void> {
     }
 
     @Override
-    public View render(@Nonnull final ViewGroup parent) {
+    public View render(@NonNull final ViewGroup parent) {
         final Context context = parent.getContext();
         final LinearLayout linearLayout = createMainLayout(context);
 
-        for (final ItemModel itemModel : props.itemsModel.itemsModelList) {
+        for (final ItemModel itemModel : props.getItemsModel().itemsModelList) {
             addReviewItem(new ReviewItem(new ReviewItem.Props(
                     itemModel,
                     getIcon(props),
@@ -85,8 +81,7 @@ public class ReviewItems extends CompactComponent<ReviewItems.Props, Void> {
         return linearLayout;
     }
 
-    private void addReviewItem(@NonNull final ReviewItem reviewItem,
-        final ViewGroup container) {
+    private void addReviewItem(@NonNull final ReviewItem reviewItem, final ViewGroup container) {
         final Renderer renderer = RendererFactory.create(container.getContext(), reviewItem);
         renderer.render(container);
     }

@@ -49,6 +49,11 @@ public final class ExpressMetadata implements Parcelable, Serializable, ExpressP
         return card != null;
     }
 
+    @Override
+    public String getCustomOptionId() {
+        return isCard() ? getCard().getId() : getPaymentMethodId();
+    }
+
     protected ExpressMetadata(final Parcel in) {
         paymentMethodId = in.readString();
         paymentTypeId = in.readString();

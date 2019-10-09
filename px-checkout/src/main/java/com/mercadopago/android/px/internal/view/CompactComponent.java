@@ -1,34 +1,28 @@
 package com.mercadopago.android.px.internal.view;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public abstract class CompactComponent<Props, Actions> {
+public abstract class CompactComponent<P, A> {
 
-    @NonNull protected Props props;
-    @Nullable private final Actions actions;
+    @NonNull protected P props;
+    @Nullable private final A actions;
 
-    public CompactComponent(@NonNull final Props props) {
+    public CompactComponent(@NonNull final P props) {
         this(props, null);
     }
 
-    public CompactComponent(@NonNull final Props props, @Nullable final Actions callBack) {
+    public CompactComponent(@NonNull final P props, @Nullable final A callBack) {
         actions = callBack;
         this.props = props;
     }
 
-    public View setProps(@NonNull final Props props, final ViewGroup parent) {
-        this.props = props;
-        return render(parent);
-    }
-
-    public abstract View render(@Nonnull final ViewGroup parent);
+    public abstract View render(@NonNull final ViewGroup parent);
 
     @Nullable
-    protected Actions getActions() {
+    protected A getActions() {
         return actions;
     }
 }

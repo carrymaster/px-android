@@ -3,6 +3,7 @@ package com.mercadopago.android.px.internal.viewmodel;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.Action;
 
@@ -54,12 +55,14 @@ public final class PaymentResultViewModel {
         return bodyTitleResId != 0;
     }
 
-    public String getTitle(@NonNull final Context context) {
-        return titleResId == 0 ? TextUtil.EMPTY : context.getString(titleResId);
+    @StringRes
+    public int getTitleResId() {
+        return titleResId;
     }
 
-    public String getLabel(@NonNull final Context context) {
-        return labelResId == 0 ? TextUtil.EMPTY : context.getString(labelResId);
+    @StringRes
+    public int getLabelResId() {
+        return labelResId;
     }
 
     public boolean hasBodyError() {

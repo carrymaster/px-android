@@ -83,7 +83,7 @@ public final class IdentificationUtils {
         }
 
         if (CPF_VALID_NUMBERS_PATTERN.matcher(cpf).matches()) {
-            int[] numbers = new int[CPF_ALGORITHM_EXPECTED_LENGTH];
+            final int[] numbers = new int[CPF_ALGORITHM_EXPECTED_LENGTH];
             for (int i = 0; i < CPF_ALGORITHM_EXPECTED_LENGTH; i++) {
                 numbers[i] = Character.getNumericValue(cpf.charAt(i));
             }
@@ -108,6 +108,8 @@ public final class IdentificationUtils {
                 if (leftover != numbers[CPF_ALGORITHM_LAST_INDEX]) {
                     throw InvalidFieldException.createInvalidCpfException();
                 }
+            } else {
+                throw InvalidFieldException.createInvalidCpfException();
             }
         } else {
             throw InvalidFieldException.createInvalidCpfException();

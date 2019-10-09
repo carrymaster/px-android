@@ -14,11 +14,8 @@ import javax.annotation.Nonnull;
 public class DiscountDetailContainer extends CompactComponent<DiscountDetailContainer.Props, Void> {
 
     public static final class Props {
-
-        @NonNull
-        /* default */ final DialogTitleType dialogTitleType;
-        @NonNull
-        /* default */ final DiscountConfigurationModel discountModel;
+        @NonNull /* default */ final DialogTitleType dialogTitleType;
+        @NonNull /* default */ final DiscountConfigurationModel discountModel;
 
         public Props(@NonNull final DialogTitleType dialogTitleType,
             @Nonnull final DiscountConfigurationModel discountModel) {
@@ -31,13 +28,13 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
         }
     }
 
-    public DiscountDetailContainer(@NonNull final DiscountDetailContainer.Props props) {
+    /* default */ DiscountDetailContainer(@NonNull final DiscountDetailContainer.Props props) {
         super(props);
     }
 
     @Nullable
     @Override
-    public View render(@Nonnull final ViewGroup parent) {
+    public View render(@NonNull final ViewGroup parent) {
         addDiscountTitle(parent);
         addDiscountDetail(parent);
         return null;
@@ -71,7 +68,7 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
     }
 
     private MPTextView getTitleTextView(final ViewGroup parent) {
-        return props.dialogTitleType.equals(Props.DialogTitleType.BIG) ? (MPTextView) ViewUtils.inflate(parent,
+        return props.dialogTitleType == Props.DialogTitleType.BIG ? (MPTextView) ViewUtils.inflate(parent,
             R.layout.px_view_big_modal_title)
             : (MPTextView) ViewUtils.inflate(parent, R.layout.px_view_small_modal_title);
     }

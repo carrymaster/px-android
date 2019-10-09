@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/px_white">
+
+            <com.mercadopago.android.px.internal.view.PaymentResultHeader
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                tools:layout_height="100dp"
+                android:layout_height="wrap_content"/>
+
+            <com.mercadopago.android.px.internal.view.PaymentResultBody
+                android:id="@+id/body"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <include layout="@layout/px_view_progress_bar"
+            android:id="@+id/loading"
+            tools:visibility="gone"/>
+
+    </FrameLayout>
+</ScrollView>

@@ -165,7 +165,7 @@ public class SummaryView extends LinearLayout implements ViewTreeObserver.OnGlob
         void onSummaryMeasured(boolean itemsClipped);
     }
 
-    public static class Model {
+    public static final class Model {
 
         /* default */ @NonNull final List<AmountDescriptorView.Model> elements;
 

@@ -15,7 +15,7 @@ import com.mercadopago.android.px.internal.features.business_result.BusinessPaym
 import com.mercadopago.android.px.internal.features.cardvault.CardVaultActivity;
 import com.mercadopago.android.px.internal.features.express.ExpressPaymentFragment;
 import com.mercadopago.android.px.internal.features.payment_vault.PaymentVaultActivity;
-import com.mercadopago.android.px.internal.features.paymentresult.PaymentResultActivity;
+import com.mercadopago.android.px.internal.features.payment_result.PaymentResultActivity;
 import com.mercadopago.android.px.internal.features.plugins.PaymentProcessorActivity;
 import com.mercadopago.android.px.internal.features.review_and_confirm.ReviewAndConfirmBuilder;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
@@ -27,13 +27,11 @@ import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.CheckoutStateModel;
+import com.mercadopago.android.px.internal.viewmodel.PaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.PostPaymentAction;
-import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Card;
-import com.mercadopago.android.px.model.IPaymentDescriptor;
 import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.PaymentRecovery;
-import com.mercadopago.android.px.model.PaymentResult;
 import com.mercadopago.android.px.model.exceptions.CheckoutPreferenceException;
 import com.mercadopago.android.px.model.exceptions.ExceptionHandler;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
@@ -52,7 +50,7 @@ import static com.mercadopago.android.px.internal.features.Constants.RESULT_ERRO
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_FAIL_ESC;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_PAYMENT;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_SILENT_ERROR;
-import static com.mercadopago.android.px.internal.features.paymentresult.PaymentResultActivity.EXTRA_RESULT_CODE;
+import static com.mercadopago.android.px.internal.features.payment_result.PaymentResultActivity.EXTRA_RESULT_CODE;
 import static com.mercadopago.android.px.model.ExitAction.EXTRA_CLIENT_RES_CODE;
 
 public class CheckoutActivity extends PXActivity<CheckoutPresenter>
@@ -133,8 +131,8 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
                         session.getInitRepository(),
                         session.getPluginRepository(),
                         session.getPaymentRepository(),
-                        session.getInternalConfiguration(),
-                        session.getBusinessModelMapper());
+                        session.getPaymentRewardRepository(),
+                        session.getInternalConfiguration());
 
                 privateKey = savedInstanceState.getString(EXTRA_PRIVATE_KEY);
                 merchantPublicKey = savedInstanceState.getString(EXTRA_PUBLIC_KEY);
@@ -179,8 +177,15 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
             session.getInitRepository(),
             session.getPluginRepository(),
             session.getPaymentRepository(),
-            session.getInternalConfiguration(),
-            session.getBusinessModelMapper());
+            session.getPaymentRewardRepository(),
+            session.getInternalConfiguration());
+    }
+
+    @Override
+    public void showPaymentResult(final PaymentModel paymentModel) {
+        overrideTransitionIn();
+        final Intent intent = PaymentResultActivity.getIntent(this, paymentModel);
+        showResult(intent, REQ_CONGRATS);
     }
 
     @Override
@@ -197,7 +202,7 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
         if (fragment != null) {
             fragment.startActivityForResult(intent, requestCode);
         } else {
-            startActivityForResult(intent, REQ_CONGRATS_BUSINESS);
+            startActivityForResult(intent, requestCode);
         }
     }
 
@@ -331,7 +336,7 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
 
     private void handlePayment(final Intent data) {
         showProgress();
-        paymentResultOk(data);
+        presenter.onPaymentFinished(PaymentProcessorActivity.getPayment(data));
     }
 
     private void handleCancel() {
@@ -357,22 +362,6 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
         } else {
             //Normal exit - Result screen.
             presenter.onPaymentResultResponse();
-        }
-    }
-
-    /**
-     * Depending on intent data it triggers {@link com.mercadopago.android.px.internal.features.paymentresult.PaymentResultActivity}
-     * flow or {@link BusinessPaymentResultActivity}.
-     *
-     * @param data intent data that can contains a {@link BusinessPayment}
-     */
-    private void paymentResultOk(final Intent data) {
-        if (PaymentProcessorActivity.isBusiness(data)) {
-            final BusinessPayment businessPayment = PaymentProcessorActivity.getBusinessPayment(data);
-            presenter.onPaymentFinished(businessPayment);
-        } else {
-            final IPaymentDescriptor payment = PaymentProcessorActivity.getPayment(data);
-            presenter.onPaymentFinished(payment);
         }
     }
 
@@ -453,13 +442,6 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
     }
 
     @Override
-    public void showPaymentResult(final PaymentResult paymentResult) {
-        overrideTransitionIn();
-        final Intent intent = PaymentResultActivity.getIntent(this, paymentResult);
-        showResult(intent, REQ_CONGRATS);
-    }
-
-    @Override
     public void showSavedCardFlow(final Card card) {
         CardVaultActivity.startActivity(this, REQ_CARD_VAULT);
     }
@@ -506,14 +488,14 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
     @Override
     public void showPaymentProcessor() {
         overrideTransitionWithNoAnimation();
-        startActivityForResult(PaymentProcessorActivity.getIntent(this), REQ_PAYMENT_PROCESSOR);
+        PaymentProcessorActivity.start(this, REQ_PAYMENT_PROCESSOR);
     }
 
     @Override
     public void showPaymentProcessorWithAnimation() {
         overrideTransitionOut();
         overrideTransitionIn();
-        startActivityForResult(PaymentProcessorActivity.getIntent(this), REQ_PAYMENT_PROCESSOR);
+        PaymentProcessorActivity.start(this, REQ_PAYMENT_PROCESSOR);
     }
 
     @Override

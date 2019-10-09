@@ -114,13 +114,7 @@ public class ReviewAndConfirmRenderer extends Renderer<ReviewAndConfirmContainer
     private void addPayerInformation(final Payer payer, final ActionDispatcher dispatcher,
         final LinearLayout linearLayout) {
         final PayerInformationComponent payerInformationComponent =
-            new PayerInformationComponent(payer, linearLayout.getContext(),
-                new PayerInformationComponent.Actions() {
-                    @Override
-                    public void onModifyPayerInformationClicked() {
-                        dispatcher.dispatch(new ChangePayerInformationAction());
-                    }
-                });
+            new PayerInformationComponent(payer, () -> dispatcher.dispatch(new ChangePayerInformationAction()));
         final View payerView = payerInformationComponent.render(linearLayout);
         linearLayout.addView(payerView);
     }

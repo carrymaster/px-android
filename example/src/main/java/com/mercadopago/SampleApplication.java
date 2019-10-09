@@ -21,12 +21,14 @@ public class SampleApplication extends Application {
         LeakCanary.install(this);
         Stetho.initializeWithDefaults(this);
 
-        // Get default client
-        final OkHttpClient client = HttpClientUtil.getClient(this, 10, 10, 10)
-            .newBuilder()
-            .addNetworkInterceptor(new StethoInterceptor())
+        // Create client base, add interceptors
+        OkHttpClient.Builder baseClient = HttpClientUtil.createBaseClient(this, 10, 10, 10)
+            .addNetworkInterceptor(new StethoInterceptor());
+
+        // customClient: client with TLS protocol setted
+        final OkHttpClient customClient = HttpClientUtil.enableTLS12(baseClient)
             .build();
 
-        HttpClientUtil.setCustomClient(client);
+        HttpClientUtil.setCustomClient(customClient);
     }
 }

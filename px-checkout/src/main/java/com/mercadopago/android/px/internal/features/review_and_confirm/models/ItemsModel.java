@@ -2,6 +2,7 @@ package com.mercadopago.android.px.internal.features.review_and_confirm.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.Item;
 import java.util.ArrayList;
@@ -11,30 +12,31 @@ public class ItemsModel implements Parcelable {
 
     public final List<ItemModel> itemsModelList;
 
-    public ItemsModel(final String currencyId, final List<Item> itemList) {
+    public ItemsModel(@NonNull final String currencyId, @NonNull final List<Item> itemList) {
         itemsModelList = parseItems(itemList, currencyId);
     }
 
-    protected ItemsModel(Parcel in) {
+    /* default */ ItemsModel(final Parcel in) {
         itemsModelList = in.createTypedArrayList(ItemModel.CREATOR);
     }
 
     public static final Creator<ItemsModel> CREATOR = new Creator<ItemsModel>() {
         @Override
-        public ItemsModel createFromParcel(Parcel in) {
+        public ItemsModel createFromParcel(final Parcel in) {
             return new ItemsModel(in);
         }
 
         @Override
-        public ItemsModel[] newArray(int size) {
+        public ItemsModel[] newArray(final int size) {
             return new ItemsModel[size];
         }
     };
 
+    @NonNull
     private List<ItemModel> parseItems(final List<Item> itemList, final String currencyId) {
-        List<ItemModel> toReturn = new ArrayList<>();
+        final List<ItemModel> toReturn = new ArrayList<>();
 
-        for (Item item : itemList) {
+        for (final Item item : itemList) {
             addItemToList(toReturn, item, itemList.size() > 1, currencyId);
         }
 
@@ -73,9 +75,5 @@ public class ItemsModel implements Parcelable {
 
     public boolean hasUniqueItem() {
         return itemsModelList != null && itemsModelList.size() == 1;
-    }
-
-    public boolean hasMultipleItems() {
-        return itemsModelList != null && itemsModelList.size() > 1;
     }
 }

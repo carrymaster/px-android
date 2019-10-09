@@ -1,5 +1,6 @@
 package com.mercadopago.android.px.internal.features.plugins;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.mercadopago.android.px.model.internal.IParcelablePaymentDescriptor;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_FORWARD_RESULT;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_FAIL_ESC;
 import static com.mercadopago.android.px.internal.features.Constants.RESULT_PAYMENT;
 import static com.mercadopago.android.px.internal.util.ErrorUtil.ERROR_REQUEST_CODE;
@@ -43,29 +45,42 @@ public final class PaymentProcessorActivity extends AppCompatActivity
     PaymentProcessor.OnPaymentListener {
 
     private static final String TAG_PROCESSOR_FRAGMENT = "TAG_PROCESSOR_FRAGMENT";
-    private static final String EXTRA_BUSINESS_PAYMENT = "extra_business_payment";
     private static final String EXTRA_PAYMENT = "extra_payment";
     private static final String EXTRA_RECOVERY = "extra_recovery";
 
     private PaymentServiceHandlerWrapper paymentServiceHandlerWrapper;
     private PaymentServiceHandler wrapper;
 
-    public static Intent getIntent(@NonNull final Context context) {
+    public static void start(@NonNull final Activity activity, final int requestCode) {
+        activity.startActivityForResult(getIntent(activity), requestCode);
+    }
+
+    public static void start(@NonNull final Fragment fragment, final int requestCode) {
+        fragment.startActivityForResult(getIntent(fragment.getContext()), requestCode);
+    }
+
+    public static void startWithForwardResult(@NonNull final Activity context) {
+        final Intent intent = getIntent(context);
+        intent.setFlags(FLAG_ACTIVITY_FORWARD_RESULT);
+        context.startActivity(intent);
+    }
+
+    @NonNull
+    private static Intent getIntent(final Context context) {
         return new Intent(context, PaymentProcessorActivity.class);
     }
 
-    public static boolean isBusiness(@Nullable final Intent intent) {
-        return intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_BUSINESS_PAYMENT);
-    }
-
-    @Nullable
-    public static IParcelablePaymentDescriptor getPayment(final Intent intent) {
-        return (IParcelablePaymentDescriptor) intent.getExtras().get(EXTRA_PAYMENT);
-    }
-
-    @Nullable
-    public static BusinessPayment getBusinessPayment(final Intent intent) {
-        return (BusinessPayment) intent.getExtras().get(EXTRA_BUSINESS_PAYMENT);
+    @NonNull
+    public static IPaymentDescriptor getPayment(final Intent intent) {
+        IPaymentDescriptor payment = null;
+        if (intent.hasExtra(EXTRA_PAYMENT)) {
+            //noinspection ConstantConditions
+            payment = (IPaymentDescriptor) intent.getExtras().get(EXTRA_PAYMENT);
+        }
+        if (payment == null) {
+            throw new IllegalStateException("No payment passed to process");
+        }
+        return payment;
     }
 
     @Nullable
@@ -87,7 +102,8 @@ public final class PaymentProcessorActivity extends AppCompatActivity
         try {
             paymentServiceHandlerWrapper = new PaymentServiceHandlerWrapper(session.getPaymentRepository(),
                 session.getConfigurationModule().getDisabledPaymentMethodRepository(),
-                new EscPaymentManagerImp(session.getMercadoPagoESC()), session.getInstructionsRepository());
+                new EscPaymentManagerImp(session.getMercadoPagoESC()), session.getInstructionsRepository(),
+                session.getPaymentRewardRepository());
 
             if (getFragmentByTag() == null) { // if fragment is not added, then create it.
                 addPaymentProcessorFragment(getSupportFragmentManager(), session);
@@ -167,20 +183,18 @@ public final class PaymentProcessorActivity extends AppCompatActivity
 
             @Override
             public void onPaymentFinished(@NonNull final IPaymentDescriptor payment) {
-
+                final Intent intent = new Intent();
                 payment.process(new IPaymentDescriptorHandler() {
                     @Override
-                    public void visit(@NonNull final BusinessPayment businessPayment) {
-                        final Intent intent = new Intent();
-                        intent.putExtra(EXTRA_BUSINESS_PAYMENT, (Parcelable) businessPayment);
+                    public void visit(@NonNull final IPaymentDescriptor payment) {
+                        intent.putExtra(EXTRA_PAYMENT, (Parcelable) IParcelablePaymentDescriptor.with(payment));
                         setResult(RESULT_PAYMENT, intent);
                         finish();
                     }
 
                     @Override
-                    public void visit(@NonNull final IPaymentDescriptor payment) {
-                        final Intent intent = new Intent();
-                        intent.putExtra(EXTRA_PAYMENT, (Parcelable) IParcelablePaymentDescriptor.with(payment));
+                    public void visit(@NonNull final BusinessPayment businessPayment) {
+                        intent.putExtra(EXTRA_PAYMENT, (Parcelable) businessPayment);
                         setResult(RESULT_PAYMENT, intent);
                         finish();
                     }
@@ -233,7 +247,7 @@ public final class PaymentProcessorActivity extends AppCompatActivity
     public void onBackPressed() {
         final Fragment fragment = getFragmentByTag();
         if (isBackHandlerFragment(fragment)) {
-            if (((SplitPaymentProcessor.BackHandler)fragment).isBackEnabled()) {
+            if (((SplitPaymentProcessor.BackHandler) fragment).isBackEnabled()) {
                 finishWithCanceledResult();
             } else {
                 //TODO: maybe can track this scenario

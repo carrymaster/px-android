@@ -20,7 +20,6 @@ import com.mercadopago.android.px.services.Callback;
 /* default */ class MethodAccountMoney extends CompactComponent<MethodAccountMoney.Props, Void> {
 
     /* default */ static final class Props {
-
         /* default */ final String paymentMethodId;
         /* default */ final String title;
 
@@ -29,10 +28,8 @@ import com.mercadopago.android.px.services.Callback;
             this.title = title;
         }
 
-        /* default */
-        static Props createFrom(final PaymentModel props) {
-            return new Props(props.paymentMethodId,
-                props.paymentMethodName);
+        /* default */ static Props createFrom(final PaymentModel props) {
+            return new Props(props.paymentMethodId, props.paymentMethodName);
         }
     }
 

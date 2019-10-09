@@ -1,11 +1,12 @@
 package com.mercadopago.android.px.internal.datasource;
 
 import android.support.annotation.NonNull;
+import com.mercadopago.android.px.addons.ESCManagerBehaviour;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.DiscountParamsConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.internal.callbacks.MPCall;
-import com.mercadopago.android.px.internal.datasource.cache.InitCache;
+import com.mercadopago.android.px.internal.datasource.cache.Cache;
 import com.mercadopago.android.px.internal.repository.InitRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.services.CheckoutService;
@@ -23,17 +24,17 @@ import static com.mercadopago.android.px.services.BuildConfig.API_VERSION;
 
 public class InitService implements InitRepository {
 
-    @NonNull private final IESCManager mercadoPagoESC;
+    @NonNull private final ESCManagerBehaviour escManagerBehaviour;
     @NonNull private final CheckoutService checkoutService;
     @NonNull private final String language;
     @NonNull /* default */ final PaymentSettingRepository paymentSettingRepository;
-    @NonNull /* default */ final InitCache initCache;
+    @NonNull /* default */ final Cache<InitResponse> initCache;
 
     public InitService(@NonNull final PaymentSettingRepository paymentSettingRepository,
-        @NonNull final IESCManager mercadoPagoESC, @NonNull final CheckoutService checkoutService,
-        @NonNull final String language, @NonNull final InitCache initCache) {
+        @NonNull final ESCManagerBehaviour escManagerBehaviour, @NonNull final CheckoutService checkoutService,
+        @NonNull final String language, @NonNull final Cache<InitResponse> initCache) {
         this.paymentSettingRepository = paymentSettingRepository;
-        this.mercadoPagoESC = mercadoPagoESC;
+        this.escManagerBehaviour = escManagerBehaviour;
         this.checkoutService = checkoutService;
         this.language = language;
         this.initCache = initCache;
@@ -95,7 +96,7 @@ public class InitService implements InitRepository {
 
         final CheckoutParams checkoutParams = new CheckoutParams.Builder()
             .setDiscountParamsConfiguration(discountParamsConfiguration)
-            .setCardWithEsc(new ArrayList<>(mercadoPagoESC.getESCCardIds()))
+            .setCardWithEsc(new ArrayList<>(escManagerBehaviour.getESCCardIds()))
             .setCharges(paymentConfiguration.getCharges())
             .setSupportsSplit(paymentConfiguration.getPaymentProcessor().supportsSplitPayment(checkoutPreference))
             .setSupportsExpress(advancedConfiguration.isExpressPaymentEnabled())

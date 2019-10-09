@@ -7,6 +7,7 @@ import com.mercadopago.android.px.internal.repository.DisabledPaymentMethodRepos
 import com.mercadopago.android.px.internal.repository.EscPaymentManager;
 import com.mercadopago.android.px.internal.repository.InstructionsRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
+import com.mercadopago.android.px.internal.repository.PaymentRewardRepository;
 import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.IPayment;
@@ -29,6 +30,7 @@ public final class PaymentServiceHandlerWrapper implements PaymentServiceHandler
     @Nullable private WeakReference<PaymentServiceHandler> handler;
     @NonNull private final EscPaymentManager escPaymentManager;
     @NonNull private final InstructionsRepository instructionsRepository;
+    @NonNull private final PaymentRewardRepository paymentRewardRepository;
     @NonNull private final Queue<Message> messages;
     @NonNull /* default */ final PaymentRepository paymentRepository;
     @NonNull /* default */ final DisabledPaymentMethodRepository disabledPaymentMethodRepository;
@@ -78,11 +80,13 @@ public final class PaymentServiceHandlerWrapper implements PaymentServiceHandler
         @NonNull final PaymentRepository paymentRepository,
         @NonNull final DisabledPaymentMethodRepository disabledPaymentMethodRepository,
         @NonNull final EscPaymentManager escPaymentManager,
-        @NonNull final InstructionsRepository instructionsRepository) {
+        @NonNull final InstructionsRepository instructionsRepository,
+        @NonNull final PaymentRewardRepository paymentRewardRepository) {
         this.paymentRepository = paymentRepository;
         this.disabledPaymentMethodRepository = disabledPaymentMethodRepository;
         this.escPaymentManager = escPaymentManager;
         this.instructionsRepository = instructionsRepository;
+        this.paymentRewardRepository = paymentRewardRepository;
         messages = new LinkedList<>();
     }
 
@@ -123,8 +127,11 @@ public final class PaymentServiceHandlerWrapper implements PaymentServiceHandler
 
     @Override
     public void onPaymentFinished(@NonNull final IPaymentDescriptor payment) {
-        // TODO remove - v5 when paymentTypeId is mandatory for payments
-        payment.process(getHandler());
+        paymentRewardRepository.getPaymentReward(payment, paymentRepository.createPaymentResult(payment),
+            (paymentParam, paymentResult, paymentReward) -> {
+            // TODO remove - v5 when paymentTypeId is mandatory for payments
+            payment.process(getHandler());
+        });
     }
 
     /* default */

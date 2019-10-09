@@ -4,19 +4,9 @@ import com.mercadopago.android.px.model.CardMetadata;
 
 public interface ExpressPaymentMethod {
 
-    default String getPaymentMethodId() {
-        return "";
-    }
-
-    default String getPaymentTypeId() {
-        return "";
-    }
-
-    default CardMetadata getCard() {
-        return null;
-    }
-
-    default boolean isCard() {
-        return false;
-    }
+    String getPaymentMethodId();
+    String getPaymentTypeId();
+    CardMetadata getCard();
+    boolean isCard();
+    String getCustomOptionId();
 }

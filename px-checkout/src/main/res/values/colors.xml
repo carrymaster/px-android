@@ -4,7 +4,7 @@
     <!-- Colors needed fot UILib V5 -->
     <color name="ui_components_android_color_primary">#009EE3</color>
     <color name="ui_components_android_color_primary_dark">#008AD6</color>
-    <color name="ui_components_success_color">#0db478</color>
+    <color name="ui_components_success_color">#00a650</color>
     <color name="ui_components_error_color">#ff6e6e</color>
     <color name="ui_components_black_color">#333333</color>
     <color name="ui_components_dark_grey_color">#666666</color>
@@ -124,9 +124,11 @@
     <!-- Payment Result components -->
     <color name="px_light_gray">#F7F7F7</color>
     <color name="px_blue_status_bar">#008CD6</color>
-    <color name="px_green_status_bar">#00B26B</color>
+    <color name="px_green_status_bar">#0a9c4d</color>
     <color name="px_red_status_bar">#E5464C</color>
     <color name="px_orange_status_bar">#E5953D</color>
+    <color name="px_badge_success">#008744</color>
+    <color name="px_badge_orange">#f28f23</color>
 
     <color name="px_white">@color/ui_components_white_color</color>
     <color name="px_med_light_gray">@color/ui_components_light_grey_color</color>
@@ -175,4 +177,11 @@
     <color name="px_disablePaymentMethodDetailDialogTitle">#CC000000</color>
     <color name="px_disablePaymentMethodDetailDialogDetail">@color/px_disablePaymentMethodDetailDialogTitle</color>
     <color name="px_disablePaymentMethodDetailDialogLink">#3483FA</color>
+
+    <!-- Payment result -->
+    <color name="px_payment_result_component_title">#cc000000</color>
+    <color name="px_payment_result_component_subtitle">#73000000</color>
+    <color name="px_payment_result_header_ring">#11000000</color>
+    <color name="px_payment_result_method_detail">#999999</color>
+    <color name="px_payment_result_method_ring">#ededed</color>
 </resources>

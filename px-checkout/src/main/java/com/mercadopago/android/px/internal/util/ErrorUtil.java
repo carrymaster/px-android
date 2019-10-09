@@ -14,14 +14,9 @@ import java.io.StringWriter;
 
 import static com.mercadopago.android.px.core.MercadoPagoCheckout.EXTRA_ERROR;
 
-/**
- * Created by mreverter on 9/5/16.
- */
-
 public final class ErrorUtil {
 
     public static final int ERROR_REQUEST_CODE = 94;
-
     private static final String PUBLIC_KEY_EXTRA = "publicKey";
 
     private ErrorUtil() {
@@ -64,8 +59,8 @@ public final class ErrorUtil {
         final ApiException apiException,
         final String requestOrigin) {
 
-        MercadoPagoError mercadoPagoError;
-        String errorMessage;
+        final MercadoPagoError mercadoPagoError;
+        final String errorMessage;
 
         if (!ApiUtil.checkConnection(activity)) {
             errorMessage = activity.getString(R.string.px_no_connection_message);
@@ -77,7 +72,7 @@ public final class ErrorUtil {
     }
 
     public static String getStacktraceMessage(final Exception e) {
-        StringWriter errors = new StringWriter();
+        final StringWriter errors = new StringWriter();
         e.printStackTrace(new PrintWriter(errors));
         return errors.toString();
     }

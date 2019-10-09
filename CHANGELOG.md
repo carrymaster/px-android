@@ -1,3 +1,46 @@
+## VERSION 4.23.1
+_02_10_2019_
+* FEATURE - Added receiptIdList in BusinessPayment
+* ENHANCEMENT - Using safe intent for cross selling actions
+* ENHANCEMENT - Fixed inconsistent empty tracking values
+
+## VERSION 4.23.0
+_02_10_2019_
+* FEATURE - Added rules sets to validate when to ask for biometrics or not
+* ENHANCEMENT - Added screen density interceptor to add headers in api calls
+* FIX - Added single click listener to prevent fast double clicks in views
+
+## VERSION 4.22.0
+_26_09_2019_
+* FEATURE - New congrats design
+* FEATURE - Business components in congrats
+* FIX - Friction events
+* FIX - Animation on detached view
+
+## VERSION 4.21.0
+_04_09_2019_
+* FEATURE - Added secure payments behaviour
+* FEATURE - Added important fragment in business payment
+* ENHANCEMENT - Enable TLS 1.2 in HttpClient
+* ENHANCEMENT - Added collectorId to CheckoutPreference
+* FIX - Security code validation
+* FIX - Strict mode warning
+
+## VERSION 4.20.0
+_29_08_2019_
+* FEATURE - Added tracking of session time and checkout type.
+* FEATURE - Added card drawer on express payment.
+* FIX - CPF validation.
+
+## VERSION 4.19.0
+_22_08_2019_
+* FEATURE - Added tracking of payment method selected index and available methods quantity.
+* FEATURE - Unified product id setters.
+* FIX - Consumer credits crash on low res.
+* FIX - Payment method discount on one tap.
+* ENHANCEMENT - Gradle task for local builds.
+* ENHANCEMENT - Security Code screen refactor.
+
 ## VERSION 4.18.0
 _01_08_2019_
 * FIX - Prevent double click on Confirm Payment.

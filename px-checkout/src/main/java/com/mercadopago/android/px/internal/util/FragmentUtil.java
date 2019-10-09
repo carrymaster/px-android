@@ -16,6 +16,20 @@ public final class FragmentUtil {
     private FragmentUtil() {
     }
 
+    public static void replaceFragment(@NonNull final ViewGroup container, @NonNull final ExternalFragment model) {
+        if (container.getContext() instanceof AppCompatActivity) {
+            final AppCompatActivity activity = (AppCompatActivity) container.getContext();
+            final Fragment fragment = FragmentUtil.createInstance(model.zClassName);
+            fragment.setArguments(model.args);
+            activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(container.getId(), fragment)
+                .commit();
+        } else {
+            throw new IllegalArgumentException("Container context is not a activity");
+        }
+    }
+
     public static void addFragmentInside(@NonNull final ViewGroup viewGroup,
         @IdRes final int resId,
         @NonNull final ExternalFragment model) {

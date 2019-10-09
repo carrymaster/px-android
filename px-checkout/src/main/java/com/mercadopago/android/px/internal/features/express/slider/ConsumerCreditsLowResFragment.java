@@ -18,12 +18,12 @@ public class ConsumerCreditsLowResFragment extends ConsumerCreditsFragment {
     @SuppressWarnings("TypeMayBeWeakened")
     @NonNull
     public static Fragment getInstance(@NonNull final ConsumerCreditsDrawableFragmentItem item) {
-        final ConsumerCreditsLowResFragment accountMoneyFragment = new ConsumerCreditsLowResFragment();
+        final ConsumerCreditsLowResFragment creditsFragment = new ConsumerCreditsLowResFragment();
         final Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_MODEL, item);
-        bundle.putString(ARG_PM_TYPE, PaymentTypes.ACCOUNT_MONEY);
-        accountMoneyFragment.setArguments(bundle);
-        return accountMoneyFragment;
+        bundle.putString(ARG_PM_TYPE, PaymentTypes.DIGITAL_CURRENCY);
+        creditsFragment.setArguments(bundle);
+        return creditsFragment;
     }
 
     @Nullable

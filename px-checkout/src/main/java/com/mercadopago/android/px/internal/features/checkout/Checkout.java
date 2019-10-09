@@ -5,11 +5,11 @@ import android.support.annotation.Nullable;
 import com.mercadopago.android.px.internal.base.MvpView;
 import com.mercadopago.android.px.internal.callbacks.FailureRecovery;
 import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
+import com.mercadopago.android.px.internal.viewmodel.PaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.PostPaymentAction;
 import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.PaymentRecovery;
-import com.mercadopago.android.px.model.PaymentResult;
 import com.mercadopago.android.px.model.exceptions.CheckoutPreferenceException;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 
@@ -25,7 +25,7 @@ import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 
         void showPaymentMethodSelection();
 
-        void showPaymentResult(final PaymentResult paymentResult);
+        void showPaymentResult(final PaymentModel paymentModel);
 
         void finishWithPaymentResult();
 

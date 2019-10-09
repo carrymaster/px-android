@@ -39,7 +39,7 @@ public class BusinessCongratsPage extends PageObject<CheckoutValidator> {
     }
 
     public boolean isSuccess() {
-        onView(withId(com.mercadopago.android.px.R.id.headerContainer))
+        onView(withId(com.mercadopago.android.px.R.id.header))
             .check(matches(withBackgroundColor(
                 InstrumentationRegistry.getTargetContext().getResources()
                     .getColor(com.mercadopago.android.px.R.color.ui_components_success_color))));

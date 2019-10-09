@@ -5,6 +5,7 @@ import android.util.Log;
 import com.mercadopago.android.px.BuildConfig;
 
 public final class Logger {
+
     private Logger() {
     }
 

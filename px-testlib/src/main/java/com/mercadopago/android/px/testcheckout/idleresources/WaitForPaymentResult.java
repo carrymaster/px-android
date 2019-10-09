@@ -1,7 +1,7 @@
 package com.mercadopago.android.px.testcheckout.idleresources;
 
 import android.support.test.espresso.IdlingRegistry;
-import com.mercadopago.android.px.internal.features.paymentresult.PaymentResultActivity;
+import com.mercadopago.android.px.internal.features.payment_result.PaymentResultActivity;
 import com.mercadopago.android.testlib.idlingresource.ActivityIdlingResource;
 
 public class WaitForPaymentResult {

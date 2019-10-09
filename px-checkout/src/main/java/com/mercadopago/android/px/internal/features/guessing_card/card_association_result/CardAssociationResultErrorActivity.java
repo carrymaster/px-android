@@ -10,7 +10,7 @@ import com.mercadolibre.android.ui.widgets.MeliButton;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.core.internal.MercadoPagoCardStorage;
 import com.mercadopago.android.px.internal.features.guessing_card.GuessingCardActivity;
-import com.mercadopago.android.px.internal.util.StatusBarDecorator;
+import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.tracking.internal.views.CardAssociationResultViewTrack;
 
 public class CardAssociationResultErrorActivity extends AppCompatActivity {
@@ -35,8 +35,7 @@ public class CardAssociationResultErrorActivity extends AppCompatActivity {
         accessToken = intent.getStringExtra(PARAM_ACCESS_TOKEN);
 
         setContentView(R.layout.px_card_association_result_error);
-        new StatusBarDecorator(getWindow())
-            .setupStatusBarColor(ContextCompat.getColor(this, R.color.px_orange_status_bar));
+        ViewUtils.setStatusBarColor(ContextCompat.getColor(this, R.color.px_orange_status_bar), getWindow());
 
         final MeliButton retryButton = findViewById(R.id.mpsdkCardAssociationResultRetryButton);
         retryButton.setOnClickListener(v -> {

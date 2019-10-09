@@ -2,6 +2,8 @@ package com.mercadopago.android.px.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -19,6 +21,14 @@ public interface IPaymentDescriptor extends IPayment {
      */
     @Nullable
     String getPaymentMethodId();
+
+    /**
+     * @return payment ids - associated with this payment including split payments
+     */
+    @Nullable
+    default List<String> getPaymentIds() {
+        return getId() != null ? Collections.singletonList(String.valueOf(getId())) : null;
+    }
 
     /**
      * method to visit {@link IPaymentDescriptor} implementation.

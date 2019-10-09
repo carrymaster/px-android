@@ -33,15 +33,6 @@ public final class ParcelableUtil {
         }
     }
 
-    @Nullable
-    public static String getOptionalString(final Parcel in) {
-        if (in.readByte() == 0) {
-            return null;
-        } else {
-            return in.readString();
-        }
-    }
-
     public static void write(final Parcel dest, final BigDecimal number) {
         dest.writeString(number.toString());
     }
@@ -52,15 +43,6 @@ public final class ParcelableUtil {
         } else {
             dest.writeByte((byte) 1);
             dest.writeString(number.toString());
-        }
-    }
-
-    public static void writeOptional(final Parcel dest, @Nullable final String string) {
-        if (string == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeString(string);
         }
     }
 

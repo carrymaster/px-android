@@ -7,7 +7,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
-import com.mercadopago.android.px.internal.util.SuperscriptSpanAdjuster;
 import com.mercadopago.android.px.model.Currency;
 
 class StyleSmallDecimal extends Style {
@@ -35,7 +34,7 @@ class StyleSmallDecimal extends Style {
         if (totalText.contains(decimalSeparator.toString())) {
             final String[] splitted = totalText.split(decimalSeparator.toString());
             final String concat = splitted[0].concat(splitted[1]);
-            SpannableStringBuilder spannable = makeSmall(splitted[0], concat);
+            final SpannableStringBuilder spannable = makeSmall(splitted[0], concat);
             return new SpannableString(spannable);
         }
         return new SpannableString(totalText);
@@ -43,7 +42,7 @@ class StyleSmallDecimal extends Style {
 
     @NonNull
     private SpannableStringBuilder makeSmall(final String big, final String all) {
-        SpannableStringBuilder spannable = new SpannableStringBuilder(all);
+        final SpannableStringBuilder spannable = new SpannableStringBuilder(all);
         spannable.setSpan(new RelativeSizeSpan(0.5f), big.length(), all.length(),
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new SuperscriptSpanAdjuster(0.7f), big.length(), all.length(),

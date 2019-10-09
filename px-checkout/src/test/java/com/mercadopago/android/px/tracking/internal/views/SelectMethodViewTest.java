@@ -25,16 +25,16 @@ public class SelectMethodViewTest {
     private static final String EXPECTED_PATH = "/px_checkout/payments/select_method";
 
     private static final String EXPECTED_ONE_CARD_SAVED_WITH_ESC =
-        "{available_methods=[{payment_method_id=visa, payment_method_type=credit_card, extra_info={issuer_id=null, card_id=123456, selected_installment=null, has_esc=true}}], items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
+        "{available_methods=[{payment_method_id=visa, payment_method_type=credit_card, extra_info={issuer_id=null, card_id=123456, selected_installment=null, has_esc=true}}], available_methods_quantity=1.0, items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
 
     private static final String EXPECTED_ONE_CARD_SAVED_NO_ESC =
-        "{available_methods=[{payment_method_id=visa, payment_method_type=credit_card, extra_info={issuer_id=null, card_id=123456, selected_installment=null, has_esc=false}}], items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
+        "{available_methods=[{payment_method_id=visa, payment_method_type=credit_card, extra_info={issuer_id=null, card_id=123456, selected_installment=null, has_esc=false}}], available_methods_quantity=1.0, items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
 
     private static final String EXPECTED_JUST_ACCOUNT_MONEY =
-        "{available_methods=[{payment_method_id=account_money, payment_method_type=account_money, extra_info=null}], items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
+        "{available_methods=[{payment_method_id=account_money, payment_method_type=account_money, extra_info=null}], available_methods_quantity=1.0, items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
 
     private static final String EXPECTED_JUST_ONE_GROUP =
-        "{available_methods=[{payment_method_id=null, payment_method_type=cards, extra_info=null}], items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
+        "{available_methods=[{payment_method_id=null, payment_method_type=cards, extra_info=null}], available_methods_quantity=1.0, items=[{quantity=1.0, item={id=1234, description=description, price=10.0}}], preference_amount=10.0}";
 
     private static final String CARD_ID = "123456";
 

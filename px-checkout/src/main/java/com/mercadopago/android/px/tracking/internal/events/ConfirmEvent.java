@@ -32,8 +32,8 @@ public final class ConfirmEvent extends EventTracker {
     public static ConfirmEvent from(@NonNull final Set<String> cardsWithEsc,
         @NonNull final ExpressMetadata expressMetadata,
         @Nullable final PayerCost selectedPayerCost,
-        final boolean isSplit) {
-        return new ConfirmEvent(new ConfirmData(ReviewType.ONE_TAP,
+        final boolean isSplit, final int paymentMethodSelectedIndex) {
+        return new ConfirmEvent(new ConfirmData(ReviewType.ONE_TAP, paymentMethodSelectedIndex,
             new FromSelectedExpressMetadataToAvailableMethods(cardsWithEsc, selectedPayerCost,isSplit).map(expressMetadata)));
     }
 

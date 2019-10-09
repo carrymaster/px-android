@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.util.CircleTransform;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -110,7 +109,7 @@ public class ElementDescriptorView extends LinearLayout {
         if (textMaxLines != DEFAULT_MAX_LINES) {
             text.setMaxLines(textMaxLines);
         }
-        LayoutParams titleParams = (LayoutParams) text.getLayoutParams();
+        final LayoutParams titleParams = (LayoutParams) text.getLayoutParams();
         titleParams.gravity = gravity;
         text.setLayoutParams(titleParams);
     }

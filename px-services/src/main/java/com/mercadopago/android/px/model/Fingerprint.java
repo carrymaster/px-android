@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressLint("MissingPermission")
 public class Fingerprint {
     private static final String TAG = "Fingerprint";
     private static final String SHARED_PREFS_FINGERPRINT_LOCATION = "FINGERPRINT_LOCATION";
@@ -307,15 +308,16 @@ public class Fingerprint {
             return new Location(new JSONObject());
         }
 
+        @NonNull
         @Override
         public String toString() {
-            Gson gson = new Gson();
+            final Gson gson = new Gson();
             try {
                 return gson.toJson(this);
-            } catch (Exception ignored) {
+            } catch (final Exception ignored) {
                 // Do nothing
             }
-            return null;
+            return "";
         }
 
         boolean hasLocation() {
@@ -465,7 +467,6 @@ public class Fingerprint {
     }
 
     private class FingerprintLocationListener implements LocationListener {
-
         @Override
         public void onLocationChanged(android.location.Location location) {
             Location newLocation = new Location(location.getLatitude(), location.getLongitude());

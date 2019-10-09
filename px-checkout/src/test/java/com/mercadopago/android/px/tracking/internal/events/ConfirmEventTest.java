@@ -21,17 +21,18 @@ public class ConfirmEventTest {
 
     private static final String EXPECTED_PATH = "/px_checkout/review/confirm";
     private static final String EXPECTED_JUST_CARD =
-        "{payment_method_type=credit_card, payment_method_id=visa, extra_info={issuer_id=0.0, has_split=false, card_id=123, selected_installment={quantity=1.0, installment_amount=10.0, visible_total_price=10.0, interest_rate=10.0}, has_esc=false}, review_type=one_tap}";
+        "{payment_method_type=credit_card, payment_method_id=visa, extra_info={issuer_id=0.0, has_split=false, card_id=123, selected_installment={quantity=1.0, installment_amount=10.0, visible_total_price=10.0, interest_rate=10.0}, has_esc=false}, payment_method_selected_index=2.0, review_type=one_tap}";
     private static final String EXPECTED_JUST_AM =
-        "{payment_method_type=account_money, payment_method_id=account_money, extra_info={balance=10.0, invested=true}, review_type=one_tap}";
+        "{payment_method_type=account_money, payment_method_id=account_money, extra_info={balance=10.0, invested=true}, payment_method_selected_index=2.0, review_type=one_tap}";
+    private static final int PAYMENT_METHOD_SELECTED_INDEX = 2;
 
     @Mock private ExpressMetadata expressMetadata;
     @Mock private Set<String> cardIdsWithEsc;
 
     @Test
     public void whenGetEventPathVerifyIsCorrect() {
-        final ConfirmEvent event = ConfirmEvent.from(cardIdsWithEsc, expressMetadata, mock(PayerCost.class),
-            false);
+        final ConfirmEvent event = ConfirmEvent
+            .from(cardIdsWithEsc, expressMetadata, mock(PayerCost.class), false, PAYMENT_METHOD_SELECTED_INDEX);
         assertEquals(EXPECTED_PATH, event.getEventPath());
     }
 
@@ -43,7 +44,8 @@ public class ConfirmEventTest {
         when(expressMetadata.getAccountMoney()).thenReturn(am);
         when(am.getBalance()).thenReturn(BigDecimal.TEN);
         when(am.isInvested()).thenReturn(true);
-        final ConfirmEvent event = ConfirmEvent.from(cardIdsWithEsc, expressMetadata, mock(PayerCost.class), false);
+        final ConfirmEvent event = ConfirmEvent
+            .from(cardIdsWithEsc, expressMetadata, mock(PayerCost.class), false, PAYMENT_METHOD_SELECTED_INDEX);
         assertEquals(EXPECTED_JUST_AM, event.getEventData().toString());
     }
 
@@ -65,7 +67,8 @@ public class ConfirmEventTest {
         when(expressMetadata.getCard()).thenReturn(card);
         when(expressMetadata.isCard()).thenReturn(true);
 
-        final ConfirmEvent event = ConfirmEvent.from(cardIdsWithEsc, expressMetadata, payerCost, false);
+        final ConfirmEvent event =
+            ConfirmEvent.from(cardIdsWithEsc, expressMetadata, payerCost, false, PAYMENT_METHOD_SELECTED_INDEX);
 
         assertEquals(EXPECTED_JUST_CARD, event.getEventData().toString());
     }

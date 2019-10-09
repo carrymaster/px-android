@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import com.mercadopago.android.px.addons.BehaviourProvider;
+import com.mercadopago.android.px.addons.ESCManagerBehaviour;
+import com.mercadopago.android.px.addons.model.SecurityValidationData;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -17,21 +20,21 @@ import com.mercadopago.android.px.internal.datasource.BankDealsService;
 import com.mercadopago.android.px.internal.datasource.CardTokenService;
 import com.mercadopago.android.px.internal.datasource.DiscountServiceImp;
 import com.mercadopago.android.px.internal.datasource.EscPaymentManagerImp;
-import com.mercadopago.android.px.internal.datasource.IESCManager;
 import com.mercadopago.android.px.internal.datasource.IdentificationService;
 import com.mercadopago.android.px.internal.datasource.InitService;
 import com.mercadopago.android.px.internal.datasource.InstructionsService;
 import com.mercadopago.android.px.internal.datasource.IssuersServiceImp;
 import com.mercadopago.android.px.internal.datasource.PaymentMethodsService;
+import com.mercadopago.android.px.internal.datasource.PaymentRewardRepositoryImpl;
 import com.mercadopago.android.px.internal.datasource.PaymentService;
 import com.mercadopago.android.px.internal.datasource.PluginService;
-import com.mercadopago.android.px.internal.datasource.ReflectiveESCManager;
 import com.mercadopago.android.px.internal.datasource.SummaryAmountService;
 import com.mercadopago.android.px.internal.datasource.TokenizeService;
-import com.mercadopago.android.px.internal.datasource.cache.InitCache;
+import com.mercadopago.android.px.internal.datasource.cache.Cache;
 import com.mercadopago.android.px.internal.datasource.cache.InitCacheCoordinator;
 import com.mercadopago.android.px.internal.datasource.cache.InitDiskCache;
 import com.mercadopago.android.px.internal.datasource.cache.InitMemCache;
+import com.mercadopago.android.px.internal.datasource.cache.PaymentRewardMemCache;
 import com.mercadopago.android.px.internal.repository.AmountConfigurationRepository;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.BankDealsRepository;
@@ -43,6 +46,7 @@ import com.mercadopago.android.px.internal.repository.InstructionsRepository;
 import com.mercadopago.android.px.internal.repository.IssuersRepository;
 import com.mercadopago.android.px.internal.repository.PaymentMethodsRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
+import com.mercadopago.android.px.internal.repository.PaymentRewardRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.PluginRepository;
 import com.mercadopago.android.px.internal.repository.SummaryAmountRepository;
@@ -53,13 +57,17 @@ import com.mercadopago.android.px.internal.services.CheckoutService;
 import com.mercadopago.android.px.internal.services.GatewayService;
 import com.mercadopago.android.px.internal.services.InstallmentService;
 import com.mercadopago.android.px.internal.services.InstructionsClient;
+import com.mercadopago.android.px.internal.services.PaymentRewardService;
 import com.mercadopago.android.px.internal.util.LocaleUtil;
 import com.mercadopago.android.px.internal.util.RetrofitUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
-import com.mercadopago.android.px.internal.viewmodel.mappers.BusinessModelMapper;
 import com.mercadopago.android.px.model.Device;
+import com.mercadopago.android.px.model.internal.InitResponse;
+import com.mercadopago.android.px.model.internal.PaymentReward;
 import com.mercadopago.android.px.services.MercadoPagoServices;
 import com.mercadopago.android.px.tracking.internal.MPTracker;
+
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.getPlatform;
 
 public final class Session extends ApplicationModule implements AmountComponent {
 
@@ -77,7 +85,8 @@ public final class Session extends ApplicationModule implements AmountComponent 
     private InitRepository initRepository;
     private PaymentRepository paymentRepository;
     private AmountConfigurationRepository amountConfigurationRepository;
-    private InitCache initCache;
+    private Cache<InitResponse> initCache;
+    private Cache<PaymentReward> paymentRewardCache;
     private PluginService pluginRepository;
     private InternalConfiguration internalConfiguration;
     private InstructionsService instructionsRepository;
@@ -87,6 +96,7 @@ public final class Session extends ApplicationModule implements AmountComponent 
     private BankDealsRepository bankDealsRepository;
     private IdentificationRepository identificationRepository;
     private PaymentMethodsRepository paymentMethodsRepository;
+    private PaymentRewardRepository paymentRewardRepository;
 
     private Session(@NonNull final Context context) {
         super(context);
@@ -116,10 +126,17 @@ public final class Session extends ApplicationModule implements AmountComponent 
         // delete old data.
         clear();
 
+        //Favoring product id in discount params because that one is surely custom if exists
+        final String deprecatedProductId =
+            mercadoPagoCheckout.getAdvancedConfiguration().getDiscountParamsConfiguration().getProductId();
+        final String productId = TextUtil.isNotEmpty(deprecatedProductId) ? deprecatedProductId
+            : mercadoPagoCheckout.getAdvancedConfiguration().getProductId();
         final SessionIdProvider sessionIdProvider =
             newSessionProvider(mercadoPagoCheckout.getTrackingConfiguration().getSessionId());
         MPTracker.getInstance().setSessionId(sessionIdProvider.getSessionId());
-        newProductIdProvider(mercadoPagoCheckout.getAdvancedConfiguration().getProductId());
+        MPTracker.getInstance().setSecurityEnabled(BehaviourProvider.getSecurityBehaviour()
+            .isSecurityEnabled(new SecurityValidationData.Builder(productId).build()));
+        newProductIdProvider(productId);
 
         // Store persistent paymentSetting
         final ConfigurationModule configurationModule = getConfigurationModule();
@@ -149,6 +166,7 @@ public final class Session extends ApplicationModule implements AmountComponent 
     private void clear() {
         getConfigurationModule().reset();
         getInitCache().evict();
+        getPaymentRewardCache().evict();
         configurationModule = null;
         discountRepository = null;
         amountRepository = null;
@@ -163,6 +181,7 @@ public final class Session extends ApplicationModule implements AmountComponent 
         issuersRepository = null;
         cardTokenRepository = null;
         paymentMethodsRepository = null;
+        paymentRewardRepository = null;
     }
 
     public InitRepository getInitRepository() {
@@ -170,8 +189,7 @@ public final class Session extends ApplicationModule implements AmountComponent 
             final PaymentSettingRepository paymentSettings = getConfigurationModule().getPaymentSettings();
             initRepository = new InitService(paymentSettings, getMercadoPagoESC(),
                 RetrofitUtil.getRetrofitClient(getApplicationContext()).create(CheckoutService.class),
-                LocaleUtil.getLanguage(getApplicationContext()),
-                getInitCache());
+                LocaleUtil.getLanguage(getApplicationContext()), getInitCache());
         }
         return initRepository;
     }
@@ -186,15 +204,15 @@ public final class Session extends ApplicationModule implements AmountComponent 
                 RetrofitUtil.getRetrofitClient(getApplicationContext()).create(InstallmentService.class);
 
             summaryAmountRepository = new SummaryAmountService(paymentService, paymentSettings,
-                advancedConfiguration, userSelectionRepository);
+                advancedConfiguration, userSelectionRepository, getProductIdProvider());
         }
         return summaryAmountRepository;
     }
 
     @NonNull
-    public IESCManager getMercadoPagoESC() {
+    public ESCManagerBehaviour getMercadoPagoESC() {
         final PaymentSettingRepository paymentSettings = getConfigurationModule().getPaymentSettings();
-        return new ReflectiveESCManager(getApplicationContext(), getSessionIdProvider().getSessionId(),
+        return BehaviourProvider.getEscManagerBehaviour(getSessionIdProvider().getSessionId(),
             paymentSettings.getAdvancedConfiguration().isEscEnabled());
     }
 
@@ -256,13 +274,21 @@ public final class Session extends ApplicationModule implements AmountComponent 
     }
 
     @NonNull
-    private InitCache getInitCache() {
+    private Cache<InitResponse> getInitCache() {
         if (initCache == null) {
             initCache =
                 new InitCacheCoordinator(new InitDiskCache(getFileManager(), getJsonUtil(), getCacheDir()),
                     new InitMemCache());
         }
         return initCache;
+    }
+
+    @NonNull
+    private Cache<PaymentReward> getPaymentRewardCache() {
+        if (paymentRewardCache == null) {
+            paymentRewardCache = new PaymentRewardMemCache();
+        }
+        return paymentRewardCache;
     }
 
     @NonNull
@@ -291,7 +317,8 @@ public final class Session extends ApplicationModule implements AmountComponent 
                 getTokenRepository(),
                 getInstructionsRepository(),
                 getInitRepository(),
-                getAmountConfigurationRepository());
+                getAmountConfigurationRepository(),
+                getPaymentRewardRepository());
         }
 
         return paymentRepository;
@@ -317,12 +344,6 @@ public final class Session extends ApplicationModule implements AmountComponent 
     @SuppressWarnings("unused")
     public void setInternalConfiguration(@NonNull final InternalConfiguration internalConfiguration) {
         this.internalConfiguration = internalConfiguration;
-    }
-
-    //TODO move.
-    @NonNull
-    public BusinessModelMapper getBusinessModelMapper() {
-        return new BusinessModelMapper(getConfigurationModule().getPaymentSettings(), getPaymentRepository());
     }
 
     @NonNull
@@ -391,5 +412,19 @@ public final class Session extends ApplicationModule implements AmountComponent 
                 new PaymentMethodsService(getConfigurationModule().getPaymentSettings(), checkoutService);
         }
         return paymentMethodsRepository;
+    }
+
+    public PaymentRewardRepository getPaymentRewardRepository() {
+        if (paymentRewardRepository == null) {
+            final Context applicationContext = getApplicationContext();
+            final PaymentRewardService paymentRewardService =
+                RetrofitUtil.getRetrofitClient(applicationContext).create(PaymentRewardService.class);
+            final PaymentSettingRepository paymentSettings = getConfigurationModule().getPaymentSettings();
+            paymentRewardRepository =
+                new PaymentRewardRepositoryImpl(getPaymentRewardCache(), paymentRewardService,
+                    paymentSettings.getPrivateKey(), getPlatform(applicationContext),
+                    LocaleUtil.getLanguage(getApplicationContext()));
+        }
+        return paymentRewardRepository;
     }
 }

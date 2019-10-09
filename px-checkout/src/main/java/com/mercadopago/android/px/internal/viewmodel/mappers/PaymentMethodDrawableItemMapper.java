@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.internal.viewmodel.mappers;
 
 import android.support.annotation.NonNull;
+import com.mercadopago.android.px.internal.viewmodel.CardDrawerConfiguration;
 import com.mercadopago.android.px.internal.viewmodel.drawables.AccountMoneyDrawableFragmentItem;
 import com.mercadopago.android.px.internal.viewmodel.drawables.AddNewCardFragmentDrawableFragmentItem;
 import com.mercadopago.android.px.internal.viewmodel.drawables.ConsumerCreditsDrawableFragmentItem;
@@ -20,7 +21,8 @@ public class PaymentMethodDrawableItemMapper extends Mapper<List<ExpressMetadata
         for (final ExpressMetadata expressMetadata : val) {
             if (expressMetadata.isCard()) {
                 result.add(new SavedCardDrawableFragmentItem(expressMetadata.getPaymentMethodId(),
-                    expressMetadata.getCard().getDisplayInfo(), expressMetadata.getCard().getId()));
+                    new CardDrawerConfiguration(expressMetadata.getCard().getDisplayInfo()),
+                    expressMetadata.getCard().getId()));
             } else if (PaymentTypes.isAccountMoney(expressMetadata.getPaymentMethodId())) {
                 result.add(new AccountMoneyDrawableFragmentItem(expressMetadata.getAccountMoney(),
                     expressMetadata.getPaymentMethodId()));

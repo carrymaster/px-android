@@ -2,7 +2,7 @@ package com.mercadopago.android.px.internal.features.explode;
 
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.internal.features.PaymentResultViewModelFactory;
-import com.mercadopago.android.px.internal.features.paymentresult.PaymentResultDecorator;
+import com.mercadopago.android.px.internal.features.payment_result.PaymentResultDecorator;
 import com.mercadopago.android.px.internal.viewmodel.mappers.Mapper;
 import com.mercadopago.android.px.model.IPayment;
 

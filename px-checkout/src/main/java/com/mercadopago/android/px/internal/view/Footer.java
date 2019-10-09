@@ -7,20 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.features.paymentresult.components.LineSeparator;
+import com.mercadopago.android.px.internal.features.payment_result.components.LineSeparator;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.model.Action;
-import javax.annotation.Nonnull;
 
 public class Footer extends CompactComponent<Footer.Props, ActionDispatcher> {
 
     public static class Props {
-
         public final Button.Props buttonAction;
         public final Button.Props linkAction;
 
-        public Props(@Nullable final Button.Props buttonAction,
-            @Nullable final Button.Props linkAction) {
+        public Props(@Nullable final Button.Props buttonAction, @Nullable final Button.Props linkAction) {
             this.buttonAction = buttonAction;
             this.linkAction = linkAction;
         }
@@ -31,7 +28,7 @@ public class Footer extends CompactComponent<Footer.Props, ActionDispatcher> {
     }
 
     @Override
-    public View render(@Nonnull final ViewGroup parent) {
+    public View render(@NonNull final ViewGroup parent) {
         final Context context = parent.getContext();
         final LinearLayout linearContainer = ViewUtils.createLinearContainer(context);
         linearContainer.setBackgroundColor(context.getResources().getColor(R.color.px_white_background));

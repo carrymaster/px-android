@@ -7,7 +7,7 @@ import com.mercadopago.android.px.model.exceptions.ApiException;
 import com.mercadopago.android.px.model.internal.InitResponse;
 import com.mercadopago.android.px.services.Callback;
 
-public class InitMemCache implements InitCache {
+public class InitMemCache implements Cache<InitResponse> {
 
     @Nullable private InitResponse initResponse;
 

@@ -2,6 +2,7 @@ package com.mercadopago.android.px.internal.repository;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.model.PayerCost;
 import java.math.BigDecimal;
 
@@ -15,6 +16,16 @@ public interface AmountRepository {
      */
     @NonNull
     BigDecimal getAmountToPay(@NonNull String paymentTypeId, @Nullable PayerCost payerCost);
+
+    /**
+     * Final amount value to pay for this specific discount model without payer cost
+     *
+     * @param paymentTypeId the payment type id
+     * @param discountModel the discount model
+     * @return amount
+     */
+    @NonNull
+    BigDecimal getAmountToPay(@NonNull String paymentTypeId, @NonNull DiscountConfigurationModel discountModel);
 
     /**
      * Partial amount to pay - No charges, discounts or payer costs applied

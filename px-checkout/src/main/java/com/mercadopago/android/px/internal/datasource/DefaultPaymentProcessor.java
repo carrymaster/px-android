@@ -45,7 +45,7 @@ public final class DefaultPaymentProcessor implements SplitPaymentProcessor {
                 public void onFailure(final MercadoPagoError error) {
                     paymentListener.onPaymentError(error);
                 }
-        });
+            });
     }
 
     @Override

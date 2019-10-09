@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/bodyErrorContainer"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/px_white"
-              android:gravity="center"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bodyErrorContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/px_white"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.mercadopago.android.px.internal.view.MPTextView
         android:id="@+id/paymentResultBodyErrorTitleDescription"
@@ -31,37 +31,6 @@
         android:background="@color/px_med_light_gray"
         android:visibility="gone"/>
 
-    <include layout="@layout/px_payment_result_body_help"/>
-
-    <View
-        android:id="@+id/bodyErrorMiddleDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/px_xxxs_height"
-        android:background="@color/px_med_light_gray"
-        android:visibility="gone"/>
-
-    <com.mercadopago.android.px.internal.view.MPTextView
-        android:id="@+id/bodyErrorSecondaryTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/px_l_margin"
-        android:paddingEnd="@dimen/px_xl_margin"
-        android:paddingLeft="@dimen/px_xl_margin"
-        android:paddingRight="@dimen/px_xl_margin"
-        android:paddingStart="@dimen/px_xl_margin"
-        android:paddingTop="@dimen/px_l_margin"
-        android:textColor="@color/ui_meli_black"
-        android:textSize="@dimen/px_l_text"
-        android:visibility="gone"
-        tools:text="¿No pudiste autorizarlo?"/>
-
-    <View
-        android:id="@+id/bodyErrorBottomDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/px_xxxs_height"
-        android:background="@color/px_med_light_gray"
-        android:visibility="gone"/>
+    <include layout="@layout/px_payment_result_help"/>
 
 </LinearLayout>

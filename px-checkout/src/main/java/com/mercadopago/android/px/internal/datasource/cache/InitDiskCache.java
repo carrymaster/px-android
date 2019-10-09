@@ -13,13 +13,13 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class InitDiskCache implements InitCache {
+public class InitDiskCache implements Cache<InitResponse> {
 
     @NonNull private final FileManager fileManager;
     @NonNull private final JsonUtil jsonUtil;
     @NonNull private final File initFile;
 
-    private static final String DEF_FILE_NAME = "px_groups";
+    private static final String DEF_FILE_NAME = "px_init";
     /* default */ final ExecutorService executorService;
     /* default */ final Handler mainHandler;
 

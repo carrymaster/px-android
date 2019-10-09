@@ -28,6 +28,7 @@
             android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
         <activity
             android:name=".internal.features.checkout.CheckoutActivity"
+            android:windowSoftInputMode="adjustPan"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
             android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
@@ -53,7 +54,7 @@
             android:name=".internal.features.ErrorActivity"
             android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
         <activity
-            android:name=".internal.features.paymentresult.PaymentResultActivity"
+            android:name=".internal.features.payment_result.PaymentResultActivity"
             android:theme="@style/ToolbarTransparentTheme"/>
         <activity
             android:name=".internal.features.SecurityCodeActivity"
@@ -68,9 +69,6 @@
             android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
         <activity
             android:name=".internal.features.payer_information.PayerInformationActivity"
-            android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
-        <activity
-            android:name=".internal.features.plugins.PaymentMethodPluginActivity"
             android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
         <activity
             android:name=".internal.features.plugins.PaymentProcessorActivity"

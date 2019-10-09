@@ -11,6 +11,7 @@ import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.internal.repository.EscPaymentManager;
 import com.mercadopago.android.px.internal.repository.InitRepository;
 import com.mercadopago.android.px.internal.repository.InstructionsRepository;
+import com.mercadopago.android.px.internal.repository.PaymentRewardRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.PluginRepository;
 import com.mercadopago.android.px.internal.repository.TokenRepository;
@@ -59,6 +60,7 @@ public class PaymentServiceTest {
     @Mock private InitResponse initResponse;
     @Mock private List<ExpressMetadata> expressMetadata;
     @Mock private AmountConfigurationRepository amountConfigurationRepository;
+    @Mock private PaymentRewardRepository paymentRewardRepository;
 
     @Mock private ExpressMetadata node;
     @Mock private CardMetadata cardMetadata;
@@ -84,7 +86,8 @@ public class PaymentServiceTest {
             tokenRepository,
             instructionsRepository,
             initRepository,
-            amountConfigurationRepository);
+            amountConfigurationRepository,
+            paymentRewardRepository);
 
         when(paymentSettingRepository.getCheckoutPreference()).thenReturn(mock(CheckoutPreference.class));
         when(discountRepository.getCurrentConfiguration()).thenReturn(WITHOUT_DISCOUNT);

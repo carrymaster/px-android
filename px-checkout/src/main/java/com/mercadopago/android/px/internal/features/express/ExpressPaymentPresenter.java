@@ -2,10 +2,12 @@ package com.mercadopago.android.px.internal.features.express;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import com.mercadopago.android.px.addons.ESCManagerBehaviour;
+import com.mercadopago.android.px.addons.model.SecurityValidationData;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
 import com.mercadopago.android.px.internal.base.BasePresenter;
-import com.mercadopago.android.px.internal.datasource.IESCManager;
+import com.mercadopago.android.px.internal.core.ProductIdProvider;
 import com.mercadopago.android.px.internal.features.explode.ExplodeDecoratorMapper;
 import com.mercadopago.android.px.internal.features.express.slider.HubAdapter;
 import com.mercadopago.android.px.internal.features.express.slider.SplitPaymentHeaderAdapter;
@@ -18,7 +20,8 @@ import com.mercadopago.android.px.internal.repository.InitRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.ApiUtil;
-import com.mercadopago.android.px.internal.util.NoConnectivityException;
+import com.mercadopago.android.px.model.exceptions.NoConnectivityException;
+import com.mercadopago.android.px.internal.util.SecurityValidationDataFactory;
 import com.mercadopago.android.px.internal.view.AmountDescriptorView;
 import com.mercadopago.android.px.internal.view.ElementDescriptorView;
 import com.mercadopago.android.px.internal.view.PaymentMethodDescriptorView;
@@ -71,12 +74,13 @@ import java.util.Set;
     @NonNull private final PaymentRepository paymentRepository;
     @NonNull private final AmountRepository amountRepository;
     @NonNull private final DiscountRepository discountRepository;
-    @NonNull private final PaymentSettingRepository paymentConfiguration;
+    @NonNull private final PaymentSettingRepository paymentSettingRepository;
     @NonNull private final AmountConfigurationRepository amountConfigurationRepository;
     @NonNull private final DisabledPaymentMethodRepository disabledPaymentMethodRepository;
     @NonNull private final ChargeRepository chargeRepository;
+    @NonNull private final ProductIdProvider productIdProvider;
     @NonNull private final ExplodeDecoratorMapper explodeDecoratorMapper;
-    @NonNull private final IESCManager mercadoPagoESC;
+    @NonNull private final ESCManagerBehaviour escManagerBehaviour;
     private final PaymentMethodDrawableItemMapper paymentMethodDrawableItemMapper;
     private final PayButtonViewModel payButtonViewModel;
     //TODO remove.
@@ -88,28 +92,31 @@ import java.util.Set;
     private int paymentMethodIndex;
 
     /* default */ ExpressPaymentPresenter(@NonNull final PaymentRepository paymentRepository,
-        @NonNull final PaymentSettingRepository paymentConfiguration,
+        @NonNull final PaymentSettingRepository paymentSettingRepository,
         @NonNull final DisabledPaymentMethodRepository disabledPaymentMethodRepository,
         @NonNull final DiscountRepository discountRepository,
         @NonNull final AmountRepository amountRepository,
         @NonNull final InitRepository initRepository,
         @NonNull final AmountConfigurationRepository amountConfigurationRepository,
         @NonNull final ChargeRepository chargeRepository,
-        @NonNull final IESCManager mercadoPagoESC) {
+        @NonNull final ESCManagerBehaviour escManagerBehaviour,
+        @NonNull final ProductIdProvider productIdProvider) {
 
         this.paymentRepository = paymentRepository;
-        this.paymentConfiguration = paymentConfiguration;
-        this.amountRepository = amountRepository;
-        this.discountRepository = discountRepository;
-        this.amountConfigurationRepository = amountConfigurationRepository;
+        this.paymentSettingRepository = paymentSettingRepository;
         this.disabledPaymentMethodRepository = disabledPaymentMethodRepository;
-        this.mercadoPagoESC = mercadoPagoESC;
+        this.discountRepository = discountRepository;
+        this.amountRepository = amountRepository;
+        this.amountConfigurationRepository = amountConfigurationRepository;
         this.chargeRepository = chargeRepository;
+        this.escManagerBehaviour = escManagerBehaviour;
+        this.productIdProvider = productIdProvider;
+
         explodeDecoratorMapper = new ExplodeDecoratorMapper();
         paymentMethodDrawableItemMapper = new PaymentMethodDrawableItemMapper();
         splitSelectionState = new SplitSelectionState();
         payButtonViewModel = new PayButtonViewModelMapper().map(
-            paymentConfiguration.getAdvancedConfiguration().getCustomStringConfiguration());
+            paymentSettingRepository.getAdvancedConfiguration().getCustomStringConfiguration());
 
         initRepository.init().execute(new Callback<InitResponse>() {
             @Override
@@ -131,23 +138,22 @@ import java.util.Set;
     public void loadViewModel() {
         availablePaymentMethodsCount = countAvailablePaymentMethods();
 
-        final SummaryInfo summaryInfo = new SummaryInfoMapper().map(paymentConfiguration.getCheckoutPreference());
+        final SummaryInfo summaryInfo = new SummaryInfoMapper().map(paymentSettingRepository.getCheckoutPreference());
 
         final ElementDescriptorView.Model elementDescriptorModel =
             new ElementDescriptorMapper().map(summaryInfo);
 
         final List<SummaryView.Model> summaryModels =
-            new SummaryViewModelMapper(paymentConfiguration.getSite().getCurrencyId(),
+            new SummaryViewModelMapper(paymentSettingRepository.getSite().getCurrencyId(),
                 discountRepository, amountRepository, elementDescriptorModel, this, summaryInfo,
                 chargeRepository).map(new ArrayList<>(expressMetadataList));
 
         final List<PaymentMethodDescriptorView.Model> paymentModels =
-            new PaymentMethodDescriptorMapper(paymentConfiguration.getSite().getCurrencyId(),
-                amountConfigurationRepository,
-                disabledPaymentMethodRepository).map(expressMetadataList);
+            new PaymentMethodDescriptorMapper(paymentSettingRepository.getSite().getCurrencyId(),
+                amountConfigurationRepository, disabledPaymentMethodRepository).map(expressMetadataList);
 
         final List<SplitPaymentHeaderAdapter.Model> splitHeaderModels =
-            new SplitHeaderMapper(paymentConfiguration.getSite().getCurrencyId(),
+            new SplitHeaderMapper(paymentSettingRepository.getSite().getCurrencyId(),
                 amountConfigurationRepository)
                 .map(expressMetadataList);
 
@@ -160,7 +166,7 @@ import java.util.Set;
         getView().showToolbarElementDescriptor(elementDescriptorModel);
 
         getView().configureAdapters(paymentMethodDrawableItemMapper.map(expressMetadataList),
-            paymentConfiguration.getSite(), model);
+            paymentSettingRepository.getSite(), model);
 
         getView().setPayButtonText(payButtonViewModel);
     }
@@ -218,11 +224,18 @@ import java.util.Set;
     @Override
     public void trackExpressView() {
         final OneTapViewTracker oneTapViewTracker = new OneTapViewTracker(expressMetadataList,
-            paymentConfiguration.getCheckoutPreference(),
+            paymentSettingRepository.getCheckoutPreference(),
             discountRepository.getCurrentConfiguration(),
-            mercadoPagoESC.getESCCardIds(),
+            escManagerBehaviour.getESCCardIds(),
             cardsWithSplit);
         setCurrentViewTracker(oneTapViewTracker);
+    }
+
+    @Override
+    public void startSecuredPayment() {
+        final SecurityValidationData data = SecurityValidationDataFactory
+            .create(productIdProvider, paymentSettingRepository, getCurrentExpressMetadata());
+        getView().startSecurityValidation(data);
     }
 
     @Override
@@ -232,12 +245,11 @@ import java.util.Set;
         // TODO improve: This was added because onetap can detach this listener on its onDestroy
         paymentRepository.attach(this);
 
-        final ExpressMetadata expressMetadata = expressMetadataList.get(paymentMethodIndex);
+        final ExpressMetadata expressMetadata = getCurrentExpressMetadata();
 
         PayerCost payerCost = null;
 
-        final String customOptionId = expressMetadata.isCard() ? expressMetadata.getCard().getId()
-            : expressMetadata.getPaymentMethodId();
+        final String customOptionId = expressMetadata.getCustomOptionId();
         final AmountConfiguration amountConfiguration =
             amountConfigurationRepository.getConfigurationFor(customOptionId);
 
@@ -248,9 +260,23 @@ import java.util.Set;
         }
 
         final boolean splitPayment = splitSelectionState.userWantsToSplit() && amountConfiguration.allowSplit();
-        ConfirmEvent.from(mercadoPagoESC.getESCCardIds(), expressMetadata, payerCost, splitPayment).track();
+        ConfirmEvent
+            .from(escManagerBehaviour.getESCCardIds(), expressMetadata, payerCost, splitPayment, paymentMethodIndex)
+            .track();
 
         paymentRepository.startExpressPayment(expressMetadata, payerCost, splitPayment);
+    }
+
+    private ExpressMetadata getCurrentExpressMetadata() {
+        return expressMetadataList.get(paymentMethodIndex);
+    }
+
+    @Override
+    public void trackSecurityFriction() {
+        // TODO Review ID
+        FrictionEventTracker
+            .with(OneTapViewTracker.PATH_REVIEW_ONE_TAP_VIEW, FrictionEventTracker.Id.GENERIC,
+                FrictionEventTracker.Style.CUSTOM_COMPONENT).track();
     }
 
     private void refreshExplodingState() {
@@ -325,11 +351,9 @@ import java.util.Set;
 
     @Override
     public void onInstallmentsRowPressed() {
-        final ExpressMetadata expressMetadata = expressMetadataList.get(paymentMethodIndex);
-        final String customOptionId =
-            expressMetadata.isCard() ? expressMetadata.getCard().getId() : expressMetadata.getPaymentMethodId();
+        final ExpressMetadata expressMetadata = getCurrentExpressMetadata();
         final AmountConfiguration amountConfiguration =
-            amountConfigurationRepository.getConfigurationFor(customOptionId);
+            amountConfigurationRepository.getConfigurationFor(expressMetadata.getCustomOptionId());
         final List<PayerCost> payerCostList = amountConfiguration.getAppliedPayerCost(
             splitSelectionState.userWantsToSplit());
         final int index = payerCostList.indexOf(
@@ -373,9 +397,7 @@ import java.util.Set;
      */
     @Override
     public void onPayerCostSelected(final PayerCost payerCostSelected) {
-        final ExpressMetadata expressMetadata = expressMetadataList.get(paymentMethodIndex);
-        final String customOptionId =
-            expressMetadata.isCard() ? expressMetadata.getCard().getId() : expressMetadata.getPaymentMethodId();
+        final String customOptionId = getCurrentExpressMetadata().getCustomOptionId();
         final int selected = amountConfigurationRepository.getConfigurationFor(customOptionId)
             .getAppliedPayerCost(splitSelectionState.userWantsToSplit())
             .indexOf(payerCostSelected);
@@ -417,7 +439,7 @@ import java.util.Set;
     @Override
     public void onChargesAmountDescriptorClicked(@NonNull final DynamicDialogCreator dynamicDialogCreator) {
         final DynamicDialogCreator.CheckoutData checkoutData = new DynamicDialogCreator.CheckoutData(
-            paymentConfiguration.getCheckoutPreference(), Collections.singletonList(new PaymentData()));
+            paymentSettingRepository.getCheckoutPreference(), Collections.singletonList(new PaymentData()));
         getView().showDynamicDialog(dynamicDialogCreator, checkoutData);
     }
 
@@ -434,9 +456,9 @@ import java.util.Set;
 
     @Override
     public void onHeaderClicked() {
-        final CheckoutPreference checkoutPreference = paymentConfiguration.getCheckoutPreference();
+        final CheckoutPreference checkoutPreference = paymentSettingRepository.getCheckoutPreference();
         final DynamicDialogConfiguration dynamicDialogConfiguration =
-            paymentConfiguration.getAdvancedConfiguration().getDynamicDialogConfiguration();
+            paymentSettingRepository.getAdvancedConfiguration().getDynamicDialogConfiguration();
 
         final DynamicDialogCreator.CheckoutData checkoutData =
             new DynamicDialogCreator.CheckoutData(checkoutPreference, Collections.singletonList(new PaymentData()));

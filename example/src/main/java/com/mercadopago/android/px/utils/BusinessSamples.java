@@ -50,7 +50,7 @@ final class BusinessSamples {
             Payment.StatusDetail.STATUS_DETAIL_CC_REJECTED_BAD_FILLED_CARD_NUMBER,
             R.drawable.px_icon_card, "Title")
             .setHelp("Help description!")
-            .setReceiptId("#123455")
+            .setReceiptId("123455")
             .setTopFragment(SampleTopFragment.class, args)
             .setPaymentMethodVisibility(true)
             .setPrimaryButton(new ExitAction(BUTTON_PRIMARY_NAME, 23))
@@ -67,7 +67,7 @@ final class BusinessSamples {
             "https://www.jqueryscript.net/images/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg",
             "Title")
             .setHelp("Help description!")
-            .setReceiptId("#123455")
+            .setReceiptId("123455")
             .setTopFragment(SampleTopFragment.class, args)
             .setStatementDescription("PEDRO")
             .setPaymentMethodVisibility(true)
@@ -83,7 +83,7 @@ final class BusinessSamples {
             new BusinessPayment.Builder(BusinessPayment.Decorator.APPROVED,
                 Payment.StatusCodes.STATUS_APPROVED,
                 Payment.StatusDetail.STATUS_DETAIL_ACCREDITED, R.drawable.px_icon_card, "Title")
-                .setReceiptId("#123455")
+                .setReceiptId("123455")
                 .setPaymentMethodVisibility(true)
                 .setSecondaryButton(new ExitAction(BUTTON_SECONDARY_NAME, 34))
                 .build();
@@ -110,7 +110,7 @@ final class BusinessSamples {
                 Payment.StatusCodes.STATUS_PENDING,
                 Payment.StatusDetail.STATUS_DETAIL_PENDING_WAITING_PAYMENT,
                 R.drawable.px_icon_card, "Title")
-                .setReceiptId("#123455")
+                .setReceiptId("123455")
                 .setPrimaryButton(new ExitAction(BUTTON_PRIMARY_NAME, 23))
                 .setSecondaryButton(new ExitAction(BUTTON_SECONDARY_NAME, 34))
                 .build();

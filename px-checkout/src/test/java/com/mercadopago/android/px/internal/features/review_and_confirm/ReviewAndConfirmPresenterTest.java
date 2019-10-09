@@ -1,18 +1,20 @@
 package com.mercadopago.android.px.internal.features.review_and_confirm;
 
 import android.support.annotation.NonNull;
+import com.mercadopago.android.px.addons.ESCManagerBehaviour;
+import com.mercadopago.android.px.addons.SecurityBehaviour;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.CustomStringConfiguration;
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration;
-import com.mercadopago.android.px.internal.datasource.IESCManager;
+import com.mercadopago.android.px.internal.core.ProductIdProvider;
+import com.mercadopago.android.px.internal.datasource.PaymentRewardRepositoryImpl;
 import com.mercadopago.android.px.internal.features.explode.ExplodeDecorator;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.internal.repository.PaymentRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
-import com.mercadopago.android.px.internal.viewmodel.BusinessPaymentModel;
 import com.mercadopago.android.px.internal.viewmodel.PayButtonViewModel;
-import com.mercadopago.android.px.internal.viewmodel.mappers.BusinessModelMapper;
+import com.mercadopago.android.px.internal.viewmodel.PaymentModel;
 import com.mercadopago.android.px.model.BusinessPayment;
 import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.IPaymentDescriptor;
@@ -21,6 +23,7 @@ import com.mercadopago.android.px.model.PaymentData;
 import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.PaymentRecovery;
 import com.mercadopago.android.px.model.PaymentResult;
+import com.mercadopago.android.px.model.Sites;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import java.util.Collections;
@@ -32,6 +35,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -46,16 +50,15 @@ public class ReviewAndConfirmPresenterTest {
     @Mock
     private PaymentRepository paymentRepository;
 
-    @Mock
-    private BusinessModelMapper businessModelMapper;
-
     private ReviewAndConfirmPresenter reviewAndConfirmPresenter;
 
-    @Mock private IESCManager IESCManager;
+    @Mock private ESCManagerBehaviour escManagerBehaviour;
 
     @Mock private PaymentSettingRepository paymentSettingRepository;
 
     @Mock private UserSelectionRepository userSelectionRepository;
+
+    @Mock private PaymentRewardRepositoryImpl paymentRewardRepository;
 
     @Mock private PaymentMethod paymentMethod;
 
@@ -63,6 +66,12 @@ public class ReviewAndConfirmPresenterTest {
     @Mock private CheckoutPreference checkoutPreference;
     @Mock private DynamicDialogConfiguration dynamicDialogConfiguration;
     @Mock private DiscountRepository discountRepository;
+
+    @Mock
+    private ProductIdProvider productIdProvider;
+
+    @Mock
+    private SecurityBehaviour securityBehaviour;
 
     @Before
     public void setUp() {
@@ -72,10 +81,8 @@ public class ReviewAndConfirmPresenterTest {
         when(advancedConfiguration.getCustomStringConfiguration()).thenReturn(mock(CustomStringConfiguration.class));
         when(userSelectionRepository.getPaymentMethod()).thenReturn(paymentMethod);
         reviewAndConfirmPresenter =
-            new ReviewAndConfirmPresenter(paymentRepository, businessModelMapper,
-                discountRepository, paymentSettingRepository,
-                userSelectionRepository,
-                IESCManager);
+            new ReviewAndConfirmPresenter(paymentRepository, discountRepository, paymentSettingRepository,
+                userSelectionRepository, paymentRewardRepository, escManagerBehaviour, productIdProvider);
 
         verifyAttachView();
     }
@@ -101,16 +108,12 @@ public class ReviewAndConfirmPresenterTest {
     @Test
     public void whenIsBusinessPaymentAndAnimationIsFinishedThenMapItAndShowResult() {
         final BusinessPayment payment = mock(BusinessPayment.class);
-        final BusinessPaymentModel businessPaymentModel = mock(BusinessPaymentModel.class);
-
         when(paymentRepository.getPayment()).thenReturn(payment);
-        when(businessModelMapper.map(payment)).thenReturn(businessPaymentModel);
 
         reviewAndConfirmPresenter.hasFinishPaymentAnimation();
 
         verify(paymentRepository).getPayment();
-        verify(view).showResult(businessPaymentModel);
-        verify(businessModelMapper).map(payment);
+        verify(paymentRepository).createPaymentResult(payment);
         verifyNoMoreInteractions(view);
         verifyNoMoreInteractions(paymentRepository);
     }
@@ -124,7 +127,7 @@ public class ReviewAndConfirmPresenterTest {
 
         verifyOnPaymentError(mercadoPagoError);
 
-        verify(view).showResult(any(PaymentResult.class));
+        verify(view).showResult(any(PaymentModel.class));
         verifyNoMoreInteractions(view);
     }
 
@@ -209,6 +212,15 @@ public class ReviewAndConfirmPresenterTest {
         verifyPaymentExplodingCompatible();
         verifyNoMoreInteractions(view);
         verifyNoMoreInteractions(paymentRepository);
+    }
+
+    @Test
+    public void whenSecuredPaymentWithSecurityThenStartValidationFlow() {
+        reviewAndConfirmPresenter.startSecuredPayment();
+        verify(productIdProvider).getProductId();
+        verify(view).startSecurityValidation(any());
+        verifyNoMoreInteractions(productIdProvider);
+        verifyNoMoreInteractions(view);
     }
 
     @Test
@@ -336,6 +348,9 @@ public class ReviewAndConfirmPresenterTest {
     }
 
     private void verifyOnPaymentError(@NonNull final MercadoPagoError mercadoPagoError) {
+        final CheckoutPreference checkoutPreference = mock(CheckoutPreference.class);
+        when(paymentSettingRepository.getCheckoutPreference()).thenReturn(checkoutPreference);
+        when(checkoutPreference.getSite()).thenReturn(Sites.ARGENTINA);
         reviewAndConfirmPresenter.onPaymentError(mercadoPagoError);
         verify(view).cancelLoadingButton();
         verify(view).showConfirmButton();
@@ -343,14 +358,19 @@ public class ReviewAndConfirmPresenterTest {
 
     private void whenIPaymentAndAnimationIsFinishedThenShowResult(final IPaymentDescriptor payment) {
         final PaymentResult paymentResult = mock(PaymentResult.class);
-
+        final CheckoutPreference checkoutPreference = mock(CheckoutPreference.class);
+        when(paymentResult.getPaymentData()).thenReturn(mock(PaymentData.class));
         when(paymentRepository.getPayment()).thenReturn(payment);
         when(paymentRepository.createPaymentResult(payment)).thenReturn(paymentResult);
+        when(paymentSettingRepository.getCheckoutPreference()).thenReturn(checkoutPreference);
+        when(checkoutPreference.getSite()).thenReturn(Sites.ARGENTINA);
+        doCallRealMethod().when(paymentRewardRepository).getPaymentReward(any(), any(), any());
 
         reviewAndConfirmPresenter.hasFinishPaymentAnimation();
 
         verify(paymentRepository).getPayment();
-        verify(view).showResult(paymentResult);
+        verify(payment).process(any());
+        verify(view).setPayButtonText(any());
         verify(paymentRepository).createPaymentResult(payment);
         verifyNoMoreInteractions(view);
         verifyNoMoreInteractions(paymentRepository);

@@ -11,26 +11,23 @@ import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.internal.util.textformatter.TextFormatter;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import java.util.Locale;
-import javax.annotation.Nonnull;
 
 public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void> {
 
     public static class Props {
-
-        @NonNull
-        /* default */ final DiscountConfigurationModel discountModel;
+        @NonNull /* default */ final DiscountConfigurationModel discountModel;
 
         public Props(@NonNull final DiscountConfigurationModel discountModel) {
             this.discountModel = discountModel;
         }
     }
 
-    public DiscountDetail(final Props props) {
+    /* default */ DiscountDetail(final Props props) {
         super(props);
     }
 
     @Override
-    public View render(@Nonnull final ViewGroup parent) {
+    public View render(@NonNull final ViewGroup parent) {
         final View mainContainer = ViewUtils.inflate(parent, R.layout.px_view_discount_detail);
         configureSubtitleMessage(mainContainer);
         configureDetailMessage(mainContainer);
@@ -77,13 +74,8 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
 
     private void configureTermsAndConditions(final View mainContainer) {
         final TextView linkText = mainContainer.findViewById(R.id.linkText);
-        linkText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                TermsAndConditionsActivity
-                    .start(mainContainer.getContext(), props.discountModel.getCampaign().getLegalTermsUrl());
-            }
-        });
+        linkText.setOnClickListener(v -> TermsAndConditionsActivity
+            .start(mainContainer.getContext(), props.discountModel.getCampaign().getLegalTermsUrl()));
     }
 
     private void configureNotAvailableDiscountDetail(final TextView detailTextView, final View mainContainer) {

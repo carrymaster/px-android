@@ -38,7 +38,13 @@ The MercadoPago Android Payment Experience makes it easy to collect your user's 
 Add this line to your app's `build.gradle` inside the `dependencies` section:
 
     implementation 'com.mercadopago.android.px:checkout:4.+'
-    
+
+### Local deployment
+
+With this command you can generate a local version for testing:
+
+    ./gradlew publishLocal
+
 ## 🐒 How to use?
 
 Only **3** steps needed to create a basic checkout using `MercadoPagoCheckout`:
@@ -152,7 +158,7 @@ You can join the MercadoPago Developers Community on MercadoPago Developers Site
 
 Looking for something else? check here:
 
-+ [Advanced color customization](https://github.com/mercadopago/px-android/docs/customization.md)
++ [Advanced color customization](https://github.com/mercadopago/px-android/blob/master/docs/customization.md)
 
 
 ## 🌈 Fonts customization

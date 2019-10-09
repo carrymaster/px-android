@@ -30,8 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.util.StatusBarDecorator;
 import com.mercadopago.android.px.internal.util.TextUtil;
+import com.mercadopago.android.px.internal.util.ViewUtils;
 
 public class ExplodingFragment extends Fragment {
 
@@ -170,8 +170,7 @@ public class ExplodingFragment extends Fragment {
     /**
      * Notify this view that the loading has finish so as to start the finish anim.
      *
-     * @param explodeDecorator information about the order result,
-     * useful for styling the view.
+     * @param explodeDecorator information about the order result, useful for styling the view.
      */
     public void finishLoading(@NonNull final ExplodeDecorator explodeDecorator) {
         this.explodeDecorator = explodeDecorator;
@@ -195,8 +194,7 @@ public class ExplodingFragment extends Fragment {
     }
 
     /**
-     * Transform the progress bar into the result icon background.
-     * The color and the shape are animated.
+     * Transform the progress bar into the result icon background. The color and the shape are animated.
      */
     /* default */ void createResultAnim() {
         @ColorInt
@@ -268,8 +266,8 @@ public class ExplodingFragment extends Fragment {
     }
 
     /**
-     * Now that the icon background is visible, animate the icon.
-     * The icon will start big and transparent and become small and opaque
+     * Now that the icon background is visible, animate the icon. The icon will start big and transparent and become
+     * small and opaque
      */
     /* default */ void createResultIconAnim() {
         progressBar.setVisibility(View.INVISIBLE);
@@ -303,49 +301,53 @@ public class ExplodingFragment extends Fragment {
         final int cx = (progressBar.getLeft() + progressBar.getRight()) / 2;
         final int cy = (progressBar.getTop() + progressBar.getBottom()) / 2 + yButtonPosition;
 
-        final Animator anim;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            anim = ViewAnimationUtils.createCircularReveal(reveal, cx, cy, startRadius, finalRadius);
-        } else {
-            anim = ObjectAnimator.ofFloat(reveal, "alpha", 0, 1);
-        }
-        anim.setDuration(getResources().getInteger(R.integer.px_long_animation_time));
-        anim.setStartDelay(getResources().getInteger(R.integer.px_long_animation_time));
-        anim.setInterpolator(new AccelerateInterpolator());
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(final Animator animation) {
-                if (isAdded()) {
-                    circle.setVisibility(View.GONE);
-                    icon.setVisibility(View.GONE);
-                    reveal.setVisibility(View.VISIBLE);
-
-                    final int startColor = ContextCompat.getColor(getContext(), explodeDecorator.getDarkPrimaryColor());
-                    final int endColor = ContextCompat.getColor(getContext(), explodeDecorator.getPrimaryColor());
-                    final Drawable[] switchColors =
-                        { new ColorDrawable(startColor), new ColorDrawable(endColor) };
-                    TransitionDrawable colorSwitch = new TransitionDrawable(switchColors);
-                    reveal.setBackgroundDrawable(colorSwitch);
-                    colorSwitch.startTransition((int) animation.getDuration());
-                    tintStatusBar(endColor);
-                }
+        //try to avoid reveal detached view
+        reveal.post(() -> {
+            final Animator anim;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                anim = ViewAnimationUtils.createCircularReveal(reveal, cx, cy, startRadius, finalRadius);
+            } else {
+                anim = ObjectAnimator.ofFloat(reveal, "alpha", 0, 1);
             }
+            anim.setDuration(getResources().getInteger(R.integer.px_long_animation_time));
+            anim.setStartDelay(getResources().getInteger(R.integer.px_long_animation_time));
+            anim.setInterpolator(new AccelerateInterpolator());
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(final Animator animation) {
+                    if (isAdded()) {
+                        circle.setVisibility(View.GONE);
+                        icon.setVisibility(View.GONE);
+                        reveal.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onAnimationEnd(final Animator animation) {
-                if (listener != null) {
-                    explodeDecorator = null;
-                    animation.removeAllListeners();
-                    listener.onAnimationFinished();
+                        final int startColor =
+                            ContextCompat.getColor(getContext(), explodeDecorator.getDarkPrimaryColor());
+                        final int endColor = ContextCompat.getColor(getContext(), explodeDecorator.getPrimaryColor());
+                        final Drawable[] switchColors =
+                            { new ColorDrawable(startColor), new ColorDrawable(endColor) };
+                        TransitionDrawable colorSwitch = new TransitionDrawable(switchColors);
+                        reveal.setBackgroundDrawable(colorSwitch);
+                        colorSwitch.startTransition((int) animation.getDuration());
+                        tintStatusBar(endColor);
+                    }
                 }
-            }
+
+                @Override
+                public void onAnimationEnd(final Animator animation) {
+                    if (listener != null) {
+                        explodeDecorator = null;
+                        animation.removeAllListeners();
+                        listener.onAnimationFinished();
+                    }
+                }
+            });
+
+            anim.start();
         });
-
-        anim.start();
     }
 
     /* default */ void tintStatusBar(final int color) {
-        new StatusBarDecorator(getActivity().getWindow()).setupStatusBarColor(color);
+        ViewUtils.setStatusBarColor(color, getActivity().getWindow());
     }
 
     @Override

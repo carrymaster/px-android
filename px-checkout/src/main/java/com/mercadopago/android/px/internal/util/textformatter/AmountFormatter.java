@@ -47,7 +47,7 @@ public class AmountFormatter extends ChainFormatter {
     }
 
     @NonNull
-    private BigDecimal getAmount(final @Nullable Discount discount) {
+    private BigDecimal getAmount(@Nullable final Discount discount) {
         return discount == null ? BigDecimal.ZERO : discount.getCouponAmount();
     }
 

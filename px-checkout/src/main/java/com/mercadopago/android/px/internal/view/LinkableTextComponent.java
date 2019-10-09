@@ -2,19 +2,12 @@ package com.mercadopago.android.px.internal.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.features.TermsAndConditionsActivity;
-import com.mercadopago.android.px.internal.features.paymentresult.components.LineSeparator;
+import com.mercadopago.android.px.internal.features.payment_result.components.LineSeparator;
 import com.mercadopago.android.px.internal.util.ViewUtils;
-import com.mercadopago.android.px.model.display_info.LinkablePhrase;
 import com.mercadopago.android.px.model.display_info.LinkableText;
 
 public class LinkableTextComponent extends CompactComponent<LinkableText, Void> {

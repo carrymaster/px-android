@@ -89,9 +89,9 @@
 
     <!-- Congrats -->
     <string name="px_title_approved_payment">¡Listo! Se acreditó tu pago</string>
-    <string name="px_text_state_account_activity_congrats">En tu estado de cuenta verás el cargo como\n %s</string>
+    <string name="px_text_state_account_activity_congrats">En tu estado de cuenta verás el cargo como %1$s</string>
     <string name="px_ending_in">terminada en</string>
-    <string name="px_receipt">Número de operación %1$s</string>
+    <string name="px_receipt">Operación #%1$s</string>
     <string name="px_date_divider">de</string>
     <string name="px_copied_to_clipboard_ack">¡Listo! Copiado.</string>
 

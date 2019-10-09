@@ -25,7 +25,6 @@ public final class MPAnimationUtils {
     private static final int FADE_DURATION = 300;
     private static final int ANIMATION_EXTRA_FACTOR = 3;
 
-
     private MPAnimationUtils() {
     }
 

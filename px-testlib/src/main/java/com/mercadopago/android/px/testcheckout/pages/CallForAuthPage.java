@@ -22,7 +22,7 @@ public class CallForAuthPage extends PageObject<CheckoutValidator> {
     }
 
     public SecurityCodeToResultsPage pressAlreadyAuthorizedButton() {
-        onView(withId(R.id.paymentResultBodyErrorAction)).perform(click());
+        onView(withId(R.id.px_button_primary)).perform(click());
         return new SecurityCodeToResultsPage(validator);
     }
 

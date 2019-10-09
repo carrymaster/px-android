@@ -1,7 +1,5 @@
 package com.mercadopago.android.px.internal.features.express.slider;
 
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.view.LinkableTextView;
 import com.mercadopago.android.px.internal.viewmodel.drawables.ConsumerCreditsDrawableFragmentItem;
@@ -18,14 +15,15 @@ import com.mercadopago.android.px.model.PaymentTypes;
 
 public class ConsumerCreditsFragment extends PaymentMethodFragment {
 
+    @SuppressWarnings("TypeMayBeWeakened")
     @NonNull
-    public static Fragment getInstance(final ConsumerCreditsDrawableFragmentItem drawableCard) {
-        final ConsumerCreditsFragment savedCardFragment = new ConsumerCreditsFragment();
+    public static Fragment getInstance(final ConsumerCreditsDrawableFragmentItem item) {
+        final ConsumerCreditsFragment creditsFragment = new ConsumerCreditsFragment();
         final Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_MODEL, drawableCard);
+        bundle.putSerializable(ARG_MODEL, item);
         bundle.putString(ARG_PM_TYPE, PaymentTypes.DIGITAL_CURRENCY);
-        savedCardFragment.setArguments(bundle);
-        return savedCardFragment;
+        creditsFragment.setArguments(bundle);
+        return creditsFragment;
     }
 
     @Nullable

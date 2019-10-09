@@ -1,21 +1,20 @@
 package com.mercadopago.android.px.internal.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Typeface;
-import android.support.annotation.ColorRes;
+import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -23,21 +22,25 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import com.mercadolibre.android.ui.font.Font;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.view.MPEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import javax.annotation.Nonnull;
 import uk.co.chrisjenx.calligraphy.TypefaceUtils;
 
 public final class ViewUtils {
+
+    private static final float DARKEN_FACTOR = 0.04f;
+    private static final int HSV_LENGTH = 3;
+    private static final float[] hsv = new float[HSV_LENGTH];
 
     private ViewUtils() {
     }
@@ -53,23 +56,6 @@ public final class ViewUtils {
     public static boolean hasEndedAnim(@NonNull final View viewToAnimate) {
         return viewToAnimate.getAnimation() == null ||
             (viewToAnimate.getAnimation() != null && viewToAnimate.getAnimation().hasEnded());
-    }
-
-    public static void addCancelToolbar(@NonNull final ViewGroup parentViewGroup, @ColorRes final int backgroundColor) {
-        final Context context = parentViewGroup.getContext();
-        final Toolbar toolbar = (Toolbar) ViewUtils.inflate(parentViewGroup, R.layout.px_toolbar_cancel);
-        parentViewGroup.addView(toolbar);
-        toolbar.setBackgroundColor(ContextCompat.getColor(context, backgroundColor));
-
-        if (context instanceof AppCompatActivity) {
-            final AppCompatActivity appCompatActivity = (AppCompatActivity) context;
-            appCompatActivity.setSupportActionBar(toolbar);
-            final ActionBar supportActionBar = appCompatActivity.getSupportActionBar();
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_close);
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setDisplayShowTitleEnabled(false);
-            toolbar.setNavigationOnClickListener(v -> appCompatActivity.onBackPressed());
-        }
     }
 
     public static void loadOrCallError(final String imgUrl, final ImageView logo, final Callback callback) {
@@ -121,10 +107,9 @@ public final class ViewUtils {
     }
 
     public static void hideKeyboard(final Activity activity) {
-
         try {
-            MPEditText editText = (MPEditText) activity.getCurrentFocus();
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(
+            final MPEditText editText = (MPEditText) activity.getCurrentFocus();
+            final InputMethodManager imm = (InputMethodManager) activity.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         } catch (final Exception ex) {
@@ -147,7 +132,6 @@ public final class ViewUtils {
     }
 
     private static void showLayout(final Activity activity, final boolean showProgress, final boolean showLayout) {
-
         final View form = activity.findViewById(R.id.mpsdkRegularLayout);
         final View progress = activity.findViewById(R.id.mpsdkProgressLayout);
 
@@ -225,44 +209,32 @@ public final class ViewUtils {
         view.setLayoutParams(params);
     }
 
-    @Nonnull
-    public static View inflate(@Nonnull final ViewGroup parent, @LayoutRes final int layout) {
+    public static void wrapHeight(@NonNull final View view) {
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        view.setLayoutParams(params);
+    }
+
+    @NonNull
+    public static View inflate(@NonNull final ViewGroup parent, @LayoutRes final int layout) {
         return LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
     }
 
-    @Nonnull
-    public static View compose(@Nonnull final ViewGroup container, @Nonnull final View... children) {
-        for (View child : children) {
-            container.addView(child);
-        }
-        return container;
-    }
-
-    @Nonnull
-    public static View compose(@Nonnull final ViewGroup container, @Nonnull final View child) {
+    @NonNull
+    public static View compose(@NonNull final ViewGroup container, @NonNull final View child) {
         container.addView(child);
         return container;
     }
 
-    @Nonnull
+    @NonNull
     public static LinearLayout createLinearContainer(final Context context) {
         final LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT));
         return linearLayout;
-    }
-
-    @Nonnull
-    public static ScrollView createScrollContainer(final Context context) {
-        final ScrollView scrollView = new ScrollView(context);
-        scrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT));
-        scrollView.setBackgroundColor(scrollView
-            .getContext()
-            .getResources()
-            .getColor(R.color.px_white_background));
-        return scrollView;
     }
 
     public static void cancelAnimation(@NonNull final View targetView) {
@@ -302,6 +274,22 @@ public final class ViewUtils {
                     runnable.run();
                 }
             });
+        }
+    }
+
+    /**
+     * Paint the status bar
+     *
+     * @param color the color to use. The color will be darkened by {@link #DARKEN_FACTOR} percent
+     */
+    @SuppressLint({ "InlinedApi" })
+    public static void setStatusBarColor(@ColorInt final int color, @NonNull final Window window) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
+            hsv[2] = Math.max(hsv[2] * (1 - DARKEN_FACTOR), 0);
+            window.setStatusBarColor(Color.HSVToColor(hsv));
         }
     }
 }

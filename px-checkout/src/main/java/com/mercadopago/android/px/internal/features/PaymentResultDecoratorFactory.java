@@ -2,7 +2,7 @@ package com.mercadopago.android.px.internal.features;
 
 import android.support.annotation.NonNull;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.internal.features.paymentresult.PaymentResultDecorator;
+import com.mercadopago.android.px.internal.features.payment_result.PaymentResultDecorator;
 import com.mercadopago.android.px.internal.viewmodel.PaymentResultViewModel;
 
 final class PaymentResultDecoratorFactory {

@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.internal.util;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 
 public final class ScaleUtil {
@@ -12,8 +13,6 @@ public final class ScaleUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
-
-    //falta landscape? pensar para android tv
 
     public static boolean isLowRes(final Context context) {
         final DisplayMetrics metrics = context.getResources().getDisplayMetrics();

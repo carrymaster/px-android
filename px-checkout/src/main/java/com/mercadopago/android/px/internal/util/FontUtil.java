@@ -11,8 +11,18 @@ import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
 
 public final class FontUtil {
+    private static Handler handler;
 
-    private static Handler mHandler;
+    private static final String QUERY_PARAM_NAME = "name=";
+    private static final String QUERY_PARAM_WIDTH = "&width=";
+    private static final String QUERY_PARAM_WEIGHT = "&weight=";
+    private static final String QUERY_PARAM_ITALIC = "&italic=";
+    private static final String QUERY_PARAM_BESTEFFORT = "&besteffort=";
+
+    private static final int WIDTH_DEFAULT = 100;
+    private static final int WEIGHT_DEFAULT = 400;
+    private static final int WEIGHT_LIGHT = 300;
+    private static final float ITALIC_DEFAULT = 0f;
 
     private FontUtil() {
     }
@@ -30,86 +40,82 @@ public final class FontUtil {
     }
 
     private static void fetchRegularFont(@NonNull final Context context) {
-        FontsContractCompat.FontRequestCallback regularFontCallback = new FontsContractCompat
+        final FontsContractCompat.FontRequestCallback regularFontCallback = new FontsContractCompat
             .FontRequestCallback() {
             @Override
-            public void onTypefaceRetrieved(Typeface typeface) {
+            public void onTypefaceRetrieved(final Typeface typeface) {
                 FontCache.setTypeface(FontCache.CUSTOM_REGULAR_FONT, typeface);
             }
 
             @Override
-            public void onTypefaceRequestFailed(int reason) {
+            public void onTypefaceRequestFailed(final int reason) {
                 //Do nothing
             }
         };
         FontsContractCompat.requestFont(context,
-            getFontRequest(FontCache.FONT_ROBOTO, QueryBuilder.WIDTH_DEFAULT,
-                QueryBuilder.WEIGHT_DEFAULT, QueryBuilder.ITALIC_DEFAULT),
+            getFontRequest(FontCache.FONT_ROBOTO, WIDTH_DEFAULT, WEIGHT_DEFAULT, ITALIC_DEFAULT),
             regularFontCallback,
             getHandlerThreadHandler());
     }
 
     private static void fetchLightFont(@NonNull final Context context) {
-        FontsContractCompat.FontRequestCallback lightFontCallback = new FontsContractCompat
+        final FontsContractCompat.FontRequestCallback lightFontCallback = new FontsContractCompat
             .FontRequestCallback() {
             @Override
-            public void onTypefaceRetrieved(Typeface typeface) {
+            public void onTypefaceRetrieved(final Typeface typeface) {
                 FontCache.setTypeface(FontCache.CUSTOM_LIGHT_FONT, typeface);
             }
 
             @Override
-            public void onTypefaceRequestFailed(int reason) {
+            public void onTypefaceRequestFailed(final int reason) {
                 //Do nothing
             }
         };
         FontsContractCompat.requestFont(context,
-            getFontRequest(FontCache.FONT_ROBOTO, QueryBuilder.WIDTH_DEFAULT,
-                QueryBuilder.WEIGHT_LIGHT, QueryBuilder.ITALIC_DEFAULT),
+            getFontRequest(FontCache.FONT_ROBOTO, WIDTH_DEFAULT, WEIGHT_LIGHT, ITALIC_DEFAULT),
             lightFontCallback,
             getHandlerThreadHandler());
     }
 
     private static void fetchMonoFont(@NonNull final Context context) {
-        FontsContractCompat.FontRequestCallback monoFontCallback = new FontsContractCompat
+        final FontsContractCompat.FontRequestCallback monoFontCallback = new FontsContractCompat
             .FontRequestCallback() {
             @Override
-            public void onTypefaceRetrieved(Typeface typeface) {
+            public void onTypefaceRetrieved(final Typeface typeface) {
                 FontCache.setTypeface(FontCache.CUSTOM_MONO_FONT, typeface);
             }
 
             @Override
-            public void onTypefaceRequestFailed(int reason) {
+            public void onTypefaceRequestFailed(final int reason) {
                 //Do nothing
             }
         };
         FontsContractCompat.requestFont(context,
-            getFontRequest(FontCache.FONT_ROBOTO_MONO, QueryBuilder.WIDTH_DEFAULT,
-                QueryBuilder.WEIGHT_DEFAULT, QueryBuilder.ITALIC_DEFAULT),
+            getFontRequest(FontCache.FONT_ROBOTO_MONO, WIDTH_DEFAULT, WEIGHT_DEFAULT, ITALIC_DEFAULT),
             monoFontCallback,
             getHandlerThreadHandler());
     }
 
-    private static FontRequest getFontRequest(@NonNull final String fontName, final int width, final int weight, final float italic) {
-        QueryBuilder queryBuilder = new QueryBuilder(fontName)
-            .withWidth(width)
-            .withWeight(weight)
-            .withItalic(italic)
-            .withBestEffort(true);
-        String query = queryBuilder.build();
+    private static FontRequest getFontRequest(@NonNull final String fontName, final int width, final int weight,
+        final float italic) {
+
+        final String query = QUERY_PARAM_NAME + fontName +
+            QUERY_PARAM_WEIGHT + weight +
+            QUERY_PARAM_WIDTH + width +
+            QUERY_PARAM_ITALIC + italic +
+            QUERY_PARAM_BESTEFFORT + true;
 
         return new FontRequest(
-            "com.google.android.gms.fonts",
-            "com.google.android.gms",
-            query,
+            "com.google.android.gms.fonts", "com.google.android.gms", query,
             R.array.com_google_android_gms_fonts_certs);
     }
 
     private static Handler getHandlerThreadHandler() {
-        if (mHandler == null) {
-            HandlerThread handlerThread = new HandlerThread("fonts");
+        if (handler == null) {
+            final HandlerThread handlerThread = new HandlerThread("fonts");
             handlerThread.start();
-            mHandler = new Handler(handlerThread.getLooper());
+            handler = new Handler(handlerThread.getLooper());
         }
-        return mHandler;
+        return handler;
     }
 }

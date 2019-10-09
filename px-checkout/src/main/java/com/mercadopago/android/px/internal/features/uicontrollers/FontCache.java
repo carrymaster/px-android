@@ -14,15 +14,15 @@ public class FontCache {
 
     private static final HashMap<String, Typeface> fontCache = new HashMap<>();
 
-    public static void setTypeface(String fontName, Typeface typeFace) {
+    public static void setTypeface(final String fontName, final Typeface typeFace) {
         fontCache.put(fontName, typeFace);
     }
 
-    public static Typeface getTypeface(String fontName) {
+    public static Typeface getTypeface(final String fontName) {
         return fontCache.get(fontName);
     }
 
-    public static boolean hasTypeface(String fontName) {
+    public static boolean hasTypeface(final String fontName) {
         return fontCache.containsKey(fontName);
     }
 }

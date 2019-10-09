@@ -26,7 +26,6 @@ public class InterestFormatter {
     }
 
     public Spannable apply() {
-
         final int initialIndex = spannableStringBuilder.length();
         final String separator = " ";
         final String description = context.getString(R.string.px_zero_rate);

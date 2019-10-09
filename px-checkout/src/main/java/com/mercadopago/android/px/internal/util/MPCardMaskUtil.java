@@ -2,30 +2,28 @@ package com.mercadopago.android.px.internal.util;
 
 import com.mercadopago.android.px.model.IdentificationType;
 
-/**
- * Created by vaserber on 8/3/16.
- */
-public class MPCardMaskUtil {
+public final class MPCardMaskUtil {
 
-    public static final String BASE_FRONT_SECURITY_CODE = "••••";
-    public static final int CPF_SEPARATOR_AMOUNT = 3;
-    public static final int CNPJ_SEPARATOR_AMOUNT = 4;
-    public static final int LAST_DIGITS_LENGTH = 4;
-    public static final char HIDDEN_NUMBER_CHAR = "•".charAt(0);
-    public static final int ORIGINAL_SPACE_DIGIT = 4;
+    private static final String BASE_FRONT_SECURITY_CODE = "••••";
+    private static final int CPF_SEPARATOR_AMOUNT = 3;
+    private static final int CNPJ_SEPARATOR_AMOUNT = 4;
+    private static final int LAST_DIGITS_LENGTH = 4;
+    private static final char HIDDEN_NUMBER_CHAR = "•".charAt(0);
 
     public static final int CARD_NUMBER_MAX_LENGTH = 16;
-    public static final int CARD_NUMBER_AMEX_LENGTH = 15;
-    public static final int CARD_NUMBER_DINERS_LENGTH = 14;
+    private static final int CARD_NUMBER_AMEX_LENGTH = 15;
+    private static final int CARD_NUMBER_DINERS_LENGTH = 14;
     private static final int CARD_NUMBER_MAESTRO_SETTING_1_LENGTH = 18;
     private static final int CARD_NUMBER_MAESTRO_SETTING_2_LENGTH = 19;
 
-    protected MPCardMaskUtil() {
+    private static final String IDENTIFICATION_TYPE_CPF = "CPF";
+    private static final String IDENTIFICATION_TYPE_CNPJ = "CNPJ";
 
+    private MPCardMaskUtil() {
     }
 
-    public static String getCardNumberHidden(int cardNumberLength, String lastFourDigits) {
-        StringBuilder sb = new StringBuilder();
+    public static String getCardNumberHidden(final int cardNumberLength, final String lastFourDigits) {
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < cardNumberLength - LAST_DIGITS_LENGTH; i++) {
             sb.append(HIDDEN_NUMBER_CHAR);
         }
@@ -33,117 +31,118 @@ public class MPCardMaskUtil {
         return buildNumberWithMask(cardNumberLength, sb.toString());
     }
 
-    public static String buildNumberWithMask(int cardLength, String number) {
+    public static String buildNumberWithMask(final int cardLength, final String number) {
         String result = "";
         if (cardLength == CARD_NUMBER_AMEX_LENGTH) {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer mask = new StringBuffer();
             for (int i = 0; i < 4; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 4; i < 10; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 10; i < CARD_NUMBER_AMEX_LENGTH; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            result = sb.toString();
+            result = mask.toString();
         } else if (cardLength == CARD_NUMBER_DINERS_LENGTH) {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer mask = new StringBuffer();
             for (int i = 0; i < 4; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 4; i < 10; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 10; i < CARD_NUMBER_DINERS_LENGTH; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            result = sb.toString();
+            result = mask.toString();
         } else if (cardLength == CARD_NUMBER_MAESTRO_SETTING_1_LENGTH) {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer mask = new StringBuffer();
             for (int i = 0; i < 10; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 10; i < 15; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 15; i < CARD_NUMBER_MAESTRO_SETTING_1_LENGTH; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            result = sb.toString();
+            result = mask.toString();
         } else if (cardLength == CARD_NUMBER_MAESTRO_SETTING_2_LENGTH) {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer mask = new StringBuffer();
             for (int i = 0; i < 9; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            sb.append(" ");
+            mask.append(" ");
             for (int i = 9; i < CARD_NUMBER_MAESTRO_SETTING_2_LENGTH; i++) {
-                char c = getCharOfCard(number, i);
-                sb.append(c);
+                final char c = getCharOfCard(number, i);
+                mask.append(c);
             }
-            result = sb.toString();
+            result = mask.toString();
         } else {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer mask = new StringBuffer();
             for (int i = 1; i <= cardLength; i++) {
-                sb.append(getCharOfCard(number, i - 1));
+                mask.append(getCharOfCard(number, i - 1));
                 if (i % 4 == 0) {
-                    sb.append(" ");
+                    mask.append(" ");
                 }
             }
-            result = sb.toString();
+            result = mask.toString();
         }
         return result;
     }
 
-    public static char getCharOfCard(String number, int i) {
+    public static char getCharOfCard(final String number, final int i) {
         if (i < number.length()) {
             return number.charAt(i);
         }
         return "•".charAt(0);
     }
 
-    public static String buildIdentificationNumberWithMask(CharSequence number, IdentificationType identificationType) {
+    public static String buildIdentificationNumberWithMask(final CharSequence number,
+        final IdentificationType identificationType) {
         if (identificationType != null && identificationType.getId() != null) {
-            String type = identificationType.getId();
-            if (type.equals("CPF")) {
+            final String type = identificationType.getId();
+            if (type.equals(IDENTIFICATION_TYPE_CPF)) {
                 return buildIdentificationNumberOfTypeCPF(number, identificationType.getMaxLength());
-            } else if (type.equals("CNPJ")) {
+            } else if (type.equals(IDENTIFICATION_TYPE_CNPJ)) {
                 return buildIdentificationNumberOfTypeCNPJ(number, identificationType.getMaxLength());
             }
         }
         return buildIdentificationNumberWithDecimalSeparator(number);
     }
 
-    public static String buildIdentificationNumberWithDecimalSeparator(CharSequence number) {
+    public static String buildIdentificationNumberWithDecimalSeparator(final CharSequence number) {
         if (number.length() == 0) {
             return number.toString();
         }
         return getMaskedNumberWithDecimalSymbols(number.toString());
     }
 
-    private static String getMaskedNumberWithDecimalSymbols(String idNumber) {
-        StringBuilder maskBuilder = new StringBuilder();
+    private static String getMaskedNumberWithDecimalSymbols(final String idNumber) {
+        final StringBuilder maskBuilder = new StringBuilder();
 
-        String nonNumericRegex = "(\\D(.*))";
-        String decimalsSymbolRegex = "(\\d)(?=(\\d{3})+$)";
+        final String nonNumericRegex = "(\\D(.*))";
+        final String decimalsSymbolRegex = "(\\d)(?=(\\d{3})+$)";
 
-        String onlyNumbers = idNumber.replaceAll(nonNumericRegex, "");
+        final String onlyNumbers = idNumber.replaceAll(nonNumericRegex, "");
 
         //Add decimal symbol to numbers
         maskBuilder.append(onlyNumbers.replaceAll(decimalsSymbolRegex, "$1."));
@@ -154,51 +153,51 @@ public class MPCardMaskUtil {
         return maskBuilder.toString();
     }
 
-    public static String buildIdentificationNumberOfTypeCPF(CharSequence number, int maxLength) {
+    public static String buildIdentificationNumberOfTypeCPF(final CharSequence number, final int maxLength) {
         String result = "";
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer identificationNumber = new StringBuffer();
         for (int i = 0; i < (maxLength + CPF_SEPARATOR_AMOUNT) && i < number.length(); i++) {
             if (i == 3 || i == 6) {
-                sb.append(".");
+                identificationNumber.append(".");
             } else if (i == 9) {
-                sb.append("-");
+                identificationNumber.append("-");
             }
-            sb.append(number.charAt(i));
+            identificationNumber.append(number.charAt(i));
         }
-        result = sb.toString();
+        result = identificationNumber.toString();
         return result;
     }
 
-    public static String buildIdentificationNumberOfTypeCNPJ(CharSequence number, int maxLength) {
+    public static String buildIdentificationNumberOfTypeCNPJ(final CharSequence number, final int maxLength) {
         String result = "";
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer identificationNumber = new StringBuffer();
         for (int i = 0; i < (maxLength + CNPJ_SEPARATOR_AMOUNT) && i < number.length(); i++) {
             if (i == 2 || i == 5) {
-                sb.append(".");
+                identificationNumber.append(".");
             } else if (i == 8) {
-                sb.append("/");
+                identificationNumber.append("/");
             } else if (i == 12) {
-                sb.append("-");
+                identificationNumber.append("-");
             }
-            sb.append(number.charAt(i));
+            identificationNumber.append(number.charAt(i));
         }
-        result = sb.toString();
+        result = identificationNumber.toString();
         return result;
     }
 
-    public static String buildSecurityCode(int securityCodeLength, String s) {
-        StringBuffer sb = new StringBuffer();
-        if (s == null || s.length() == 0) {
+    public static String buildSecurityCode(final int securityCodeLength, final String code) {
+        final StringBuffer securityCode = new StringBuffer();
+        if (code == null || code.isEmpty()) {
             return BASE_FRONT_SECURITY_CODE;
         }
         for (int i = 0; i < securityCodeLength; i++) {
-            char c = getCharOfCard(s, i);
-            sb.append(c);
+            final char charOfCard = getCharOfCard(code, i);
+            securityCode.append(charOfCard);
         }
-        return sb.toString();
+        return securityCode.toString();
     }
 
-    public static boolean needsMask(CharSequence currentNumber, int cardNumberLength) {
+    public static boolean needsMask(final CharSequence currentNumber, final int cardNumberLength) {
 
         if (cardNumberLength == CARD_NUMBER_MAESTRO_SETTING_1_LENGTH) {
 
@@ -213,15 +212,7 @@ public class MPCardMaskUtil {
         }
     }
 
-    public static StringBuilder getCardNumberReset(String currentCardNumber) {
-        StringBuilder cardNumberReset = new StringBuilder();
-        cardNumberReset.append(currentCardNumber, 0, ORIGINAL_SPACE_DIGIT);
-        cardNumberReset.append(" ");
-        cardNumberReset.append(currentCardNumber.charAt(ORIGINAL_SPACE_DIGIT));
-        return cardNumberReset;
-    }
-
-    public static boolean isDefaultSpaceErasable(int currentNumberLength) {
+    public static boolean isDefaultSpaceErasable(final int currentNumberLength) {
         return currentNumberLength < 6;
     }
 }

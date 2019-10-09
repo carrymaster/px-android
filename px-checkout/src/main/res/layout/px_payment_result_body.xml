@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/px_white"
+    android:orientation="vertical">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/mpsdkPaymentResultContainerBody"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:background="@color/px_white">
+    <FrameLayout
+        android:id="@+id/px_fragment_container_important"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+    <include android:id="@+id/businessComponents"
+        layout="@layout/px_business_components"/>
+
+    <com.mercadopago.android.px.internal.view.PaymentResultReceipt
+        android:id="@+id/receipt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include layout="@layout/px_payment_result_help"
+        android:id="@+id/help"/>
+
+    <FrameLayout
+        android:id="@+id/px_fragment_container_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.mercadopago.android.px.internal.view.PaymentResultMethod
+        android:id="@+id/primaryMethod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.mercadopago.android.px.internal.view.PaymentResultMethod
+        android:id="@+id/secondaryMethod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <FrameLayout
+        android:id="@+id/px_fragment_container_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</merge>

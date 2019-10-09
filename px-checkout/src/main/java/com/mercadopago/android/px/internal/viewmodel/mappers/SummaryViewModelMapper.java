@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.internal.viewmodel.mappers;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.ChargeRepository;
@@ -12,6 +13,7 @@ import com.mercadopago.android.px.internal.view.SummaryView;
 import com.mercadopago.android.px.internal.viewmodel.AmountLocalized;
 import com.mercadopago.android.px.internal.viewmodel.SummaryViewDefaultColor;
 import com.mercadopago.android.px.internal.viewmodel.TotalLocalized;
+import com.mercadopago.android.px.model.CardMetadata;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.model.commission.PaymentTypeChargeRule;
 import com.mercadopago.android.px.model.internal.ExpressPaymentMethod;
@@ -47,33 +49,23 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
     @Override
     protected Pair<DiscountConfigurationModel, PaymentTypeChargeRule> getKey(
         @NonNull final ExpressPaymentMethod expressPaymentMethod) {
-        return new Pair<>(discountRepository.getConfigurationFor(getCustomOptionId(expressPaymentMethod)),
+        return new Pair<>(discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()),
             chargeRepository.getChargeRule(expressPaymentMethod.getPaymentTypeId()));
     }
 
     @Override
     public SummaryView.Model map(@NonNull final ExpressPaymentMethod expressPaymentMethod) {
         return createModel(expressPaymentMethod.getPaymentTypeId(),
-            discountRepository.getConfigurationFor(getCustomOptionId(expressPaymentMethod)));
+            discountRepository.getConfigurationFor(expressPaymentMethod.getCustomOptionId()));
     }
 
     //TODO remove when add card node comes from backend
     @Override
     public List<SummaryView.Model> map(@NonNull final Iterable<ExpressPaymentMethod> val) {
         if (val instanceof Collection) {
-            ((Collection<ExpressPaymentMethod>) val).add(new ExpressPaymentMethod() {});
+            ((Collection<ExpressPaymentMethod>) val).add(getAddCardNode());
         }
         return super.map(val);
-    }
-
-    @NonNull
-    private String getCustomOptionId(@NonNull final ExpressPaymentMethod expressPaymentMethod) {
-        if (expressPaymentMethod.isCard()) {
-            return expressPaymentMethod.getCard().getId();
-        } else {
-            // Account money
-            return expressPaymentMethod.getPaymentMethodId();
-        }
     }
 
     @NonNull
@@ -86,9 +78,41 @@ public class SummaryViewModelMapper extends CacheableMapper<ExpressPaymentMethod
 
         final AmountDescriptorView.Model totalRow = new AmountDescriptorView.Model(
             new TotalLocalized(),
-            new AmountLocalized(amountRepository.getAmountToPay(paymentTypeId, null), currencyId),
+            new AmountLocalized(amountRepository.getAmountToPay(paymentTypeId, discountModel), currencyId),
             new SummaryViewDefaultColor());
 
         return new SummaryView.Model(elementDescriptorModel, summaryDetailList, totalRow);
+    }
+
+    @NonNull
+    private ExpressPaymentMethod getAddCardNode() {
+        return new ExpressPaymentMethod() {
+            @Override
+            public String getPaymentMethodId() {
+                return "";
+            }
+
+            @Override
+            public String getPaymentTypeId() {
+                return "";
+            }
+
+            @Nullable
+            @Override
+            public CardMetadata getCard() {
+                return null;
+            }
+
+            @Override
+            public boolean isCard() {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            public String getCustomOptionId() {
+                return getPaymentMethodId();
+            }
+        };
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.AppTheme" parent="Theme.AppCompat">
         <item name="android:textColorPrimary">@color/px_white</item>
         <item name="actionMenuTextColor">@color/px_white</item>
     </style>

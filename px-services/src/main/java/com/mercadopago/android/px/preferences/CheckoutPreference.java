@@ -51,6 +51,8 @@ public class CheckoutPreference implements Serializable {
 
     @Nullable private final Date expirationDateFrom;
 
+    @Nullable private final String collectorId;
+
     @NonNull private final String marketplace;
 
     //region support external integrations - payment processor instores
@@ -90,6 +92,7 @@ public class CheckoutPreference implements Serializable {
         isBinaryMode = builder.isBinaryMode;
         additionalInfo = builder.additionalInfo;
         processingModes = builder.processingModes;
+        collectorId = null;
 
         branchId = builder.branchId;
         paymentPreference = new PaymentPreference();
@@ -183,6 +186,11 @@ public class CheckoutPreference implements Serializable {
     }
 
     @Nullable
+    public String getCollectorId() {
+        return collectorId;
+    }
+
+    @Nullable
     public String getDefaultPaymentMethodId() {
         return getPaymentPreference().getDefaultPaymentMethodId();
     }
@@ -244,6 +252,7 @@ public class CheckoutPreference implements Serializable {
         return isBinaryMode;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "CheckoutPreference{" +
@@ -546,7 +555,7 @@ public class CheckoutPreference implements Serializable {
         /**
          * Processing mode allowed for this payment. Can be any of {@link ProcessingMode} values.
          *
-         * @param processingMode allowed for this payment preference.
+         * @param processingModes allowed for this payment preference.
          */
         public Builder setProcessingModes(@NonNull final ProcessingMode[] processingModes) {
             this.processingModes = processingModes;

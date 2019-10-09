@@ -19,11 +19,6 @@ public abstract class BasePresenter<V extends MvpView> {
     @Nullable private transient WeakReference<V> mView;
     @Nullable /* default */ transient ViewTracker viewTracker;
 
-    protected final void setCurrentViewTracker(@NonNull final ViewTracker viewTracker) {
-        this.viewTracker = viewTracker;
-        viewTracker.track();
-    }
-
     protected final transient TrackingContract tracker = new TrackingContract() {
 
         @Override
@@ -40,6 +35,11 @@ public abstract class BasePresenter<V extends MvpView> {
             }
         }
     };
+
+    protected final void setCurrentViewTracker(@NonNull final ViewTracker viewTracker) {
+        this.viewTracker = viewTracker;
+        viewTracker.track();
+    }
 
     public void recoverFromBundle(@NonNull final Bundle bundle) {
     }

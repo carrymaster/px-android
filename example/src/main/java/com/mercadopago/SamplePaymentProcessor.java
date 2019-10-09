@@ -2,62 +2,59 @@ package com.mercadopago;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import com.mercadopago.android.px.core.PaymentProcessor;
 import com.mercadopago.android.px.model.BusinessPayment;
-import com.mercadopago.android.px.model.GenericPayment;
 import com.mercadopago.android.px.model.IPayment;
+import com.mercadopago.android.px.model.internal.IParcelablePaymentDescriptor;
+import com.mercadopago.android.px.preferences.CheckoutPreference;
 
-import static com.mercadopago.android.px.utils.PaymentUtils.getBusinessPaymentApproved;
+public class SamplePaymentProcessor extends SamplePaymentProcessorNoView {
 
-public class SamplePaymentProcessor implements PaymentProcessor {
+    public static final Creator<SamplePaymentProcessor> CREATOR = new Creator<SamplePaymentProcessor>() {
+        @Override
+        public SamplePaymentProcessor createFromParcel(final Parcel in) {
+            return new SamplePaymentProcessor(in);
+        }
 
-    private static final int CONSTANT_DELAY_MILLIS = 2000;
-    private final IPayment iPayment;
+        @Override
+        public SamplePaymentProcessor[] newArray(final int size) {
+            return new SamplePaymentProcessor[size];
+        }
+    };
 
-    public SamplePaymentProcessor(final IPayment iPayment) {
-        this.iPayment = iPayment;
+    public SamplePaymentProcessor(final IPayment payment) {
+        super(payment);
     }
 
-    public SamplePaymentProcessor() {
-        iPayment = getBusinessPaymentApproved();
+    public SamplePaymentProcessor(final IParcelablePaymentDescriptor payment) {
+        super(payment);
+    }
+
+    public SamplePaymentProcessor(final BusinessPayment businessPayment) {
+        super(businessPayment);
+    }
+
+    /* default */ SamplePaymentProcessor(final Parcel in) {
+        super(in);
     }
 
     @Override
-    public void startPayment(@NonNull final CheckoutData data, @NonNull final Context context,
+    public void startPayment(@NonNull final Context context, @NonNull final CheckoutData data,
         @NonNull final OnPaymentListener paymentListener) {
         throw new IllegalStateException("This will never be called because shouldShowFragmentOnPayment is hardcoded");
     }
 
     @Override
-    public boolean shouldShowFragmentOnPayment() {
+    public boolean shouldShowFragmentOnPayment(@NonNull final CheckoutPreference checkoutPreference) {
         return true;
     }
 
-    @Override
-    public int getPaymentTimeout() {
-        return CONSTANT_DELAY_MILLIS;
-    }
-
     @Nullable
     @Override
-    public Bundle getFragmentBundle(@NonNull final CheckoutData data, @NonNull final Context context) {
-        final Bundle bundle = new Bundle();
-        // This is just a sample, you should't do this, you must process the payment inside the fragment.
-        if (iPayment instanceof BusinessPayment) {
-            bundle.putSerializable(SamplePaymentProcessorFragment.ARG_BUSINESS, (BusinessPayment) iPayment);
-        } else if (iPayment instanceof GenericPayment) {
-            bundle.putSerializable(SamplePaymentProcessorFragment.ARG_GENERIC, (GenericPayment) iPayment);
-        }
-        return bundle;
-    }
-
-    @Nullable
-    @Override
-    public Fragment getFragment(@NonNull final CheckoutData data,
-        @NonNull final Context context) {
-        return new SamplePaymentProcessorFragment();
+    public Fragment getFragment(@NonNull final CheckoutData data, @NonNull final Context context) {
+        return SamplePaymentProcessorFragment.with(payment != null ? payment : businessPayment);
     }
 }

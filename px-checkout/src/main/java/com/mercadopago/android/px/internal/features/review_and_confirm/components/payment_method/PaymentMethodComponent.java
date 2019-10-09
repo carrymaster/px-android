@@ -38,7 +38,6 @@ public class PaymentMethodComponent extends CompactComponent<PaymentModel, Payme
 
     @Override
     public View render(@NonNull final ViewGroup parent) {
-
         final ViewGroup paymentMethodView = (ViewGroup) resolveComponent().render(parent);
 
         if (shouldShowPaymentMethodButton()) {

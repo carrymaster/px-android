@@ -34,7 +34,6 @@ public class PayerCostFormatter {
     }
 
     public Spannable apply() {
-
         final Spannable totalAmount = TextFormatter.withCurrencyId(currencyId)
             .amount(payerCost.getTotalAmount())
             .normalDecimals()

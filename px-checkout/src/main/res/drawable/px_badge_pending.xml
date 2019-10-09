@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/px_badge_success"/>
+            <size android:width="48dp"
+                android:height="48dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="center" android:right="20dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/px_white"/>
+            <size android:width="5dp"
+                android:height="5dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="@color/px_white"/>
+            <size android:width="5dp"
+                android:height="5dp"/>
+        </shape>
+    </item>
+
+    <item android:gravity="center" android:left="20dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/px_white"/>
+            <size android:width="5dp"
+                android:height="5dp"/>
+        </shape>
+    </item>
+</layer-list>

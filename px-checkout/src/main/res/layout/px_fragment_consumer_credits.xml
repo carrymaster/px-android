@@ -4,13 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:ignore="NestedWeights"
-    tools:layout_height="200dp">
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/px_badge_offset">
 
         <android.support.v7.widget.CardView
@@ -24,56 +22,65 @@
             app:cardElevation="2dp"
             app:cardPreventCornerOverlap="false">
 
-            <ImageView
-                android:id="@+id/background"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/px_card_shape_layer"/>
+                <ImageView
+                    android:id="@+id/background"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintDimensionRatio="@string/px_card_aspect_ratio"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/background"
+                    android:src="@drawable/px_card_shape_layer"/>
 
                 <com.mercadopago.android.px.internal.view.LinkableTextView
                     android:id="@+id/top_text"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/ui_fontsize_xxsmall"
-                    android:layout_centerInParent="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/background"
                     tools:text="Pagá en hasta 12 cuotas sin usar tarjeta"/>
 
                 <ImageView
                     android:id="@+id/logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_above="@id/top_text"
-                    android:layout_centerHorizontal="true"
                     android:layout_marginBottom="@dimen/px_xxs_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/top_text"
                     android:src="@drawable/px_consumer_credits_onetap"/>
-
-
 
                 <com.mercadopago.android.px.internal.view.LinkableTextView
                     android:id="@+id/bottom_text"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:layout_marginLeft="@dimen/px_m_margin"
-                    android:layout_marginRight="@dimen/px_m_margin"
+                    android:layout_marginStart="@dimen/px_m_margin"
+                    android:layout_marginEnd="@dimen/px_m_margin"
                     android:layout_marginBottom="@dimen/px_m_margin"
-                    android:layout_alignParentBottom="true"
                     android:textSize="@dimen/px_xxxs_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/background"
                     tools:text="Al confirmar, aceptás los términos generales y las condiciones particulares de este préstamo."/>
-            </RelativeLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
         </android.support.v7.widget.CardView>
 
     </FrameLayout>
@@ -82,8 +89,10 @@
         android:id="@+id/px_disabled_badge"
         android:layout_width="@dimen/px_bigger_badge_size"
         android:layout_height="@dimen/px_bigger_badge_size"
-        android:layout_gravity="top|right"
+        android:layout_gravity="top|end"
         android:layout_marginRight="@dimen/px_l_alternative_margin"
+        android:layout_marginEnd="@dimen/px_l_alternative_margin"
         android:src="@drawable/px_badge_warning_shadow"
         android:visibility="gone"/>
+
 </FrameLayout>

@@ -66,13 +66,13 @@ public final class ResourceUtil {
         return color;
     }
 
-    public static int getCardImage(@NonNull final Context context, @Nullable String paymentMethodId) {
+    public static int getCardImage(@NonNull final Context context, @NonNull final String paymentMethodId) {
         final String imageName = "px_ico_card_" + paymentMethodId.toLowerCase();
         return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
     }
 
     public static int getIssuerImage(@NonNull final Context context, final long issueId) {
-        final String imageName = CARD_ISSUER_IMAGE_PREFIX + String.valueOf(issueId);
+        final String imageName = CARD_ISSUER_IMAGE_PREFIX + issueId;
         return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
     }
 
