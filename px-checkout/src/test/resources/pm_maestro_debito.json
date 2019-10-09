@@ -1,0 +1,53 @@
+{
+  "id": "maestro",
+  "name": "Maestro",
+  "payment_type_id": "debit_card",
+  "status": "active",
+  "secure_thumbnail": "https://www.mercadopago.com/org-img/MP3/API/logos/maestro.gif",
+  "thumbnail": "http://img.mlstatic.com/org-img/MP3/API/logos/maestro.gif",
+  "deferred_capture": "unsupported",
+  "settings": [
+    {
+      "card_number": {
+        "validation": "none",
+        "length": 18
+      },
+      "bin": {
+        "pattern": "^(501020|501021|501023|501062|501038|501057|588729|501041|501056|501075)",
+        "installments_pattern": null,
+        "exclusion_pattern": null
+      },
+      "security_code": {
+        "length": 3,
+        "card_location": "back",
+        "mode": "mandatory"
+      }
+    },
+    {
+      "card_number": {
+        "validation": "none",
+        "length": 19
+      },
+      "bin": {
+        "pattern": "^(501080|501081)",
+        "installments_pattern": null,
+        "exclusion_pattern": null
+      },
+      "security_code": {
+        "length": 3,
+        "card_location": "back",
+        "mode": "mandatory"
+      }
+    }
+  ],
+  "additional_info_needed": [
+    "cardholder_identification_number",
+    "cardholder_identification_type",
+    "cardholder_name"
+  ],
+  "min_allowed_amount": 0,
+  "max_allowed_amount": 250000,
+  "accreditation_time": 1440,
+  "financial_institutions": [
+  ]
+}

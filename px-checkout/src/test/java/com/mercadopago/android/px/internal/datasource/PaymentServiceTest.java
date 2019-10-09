@@ -21,10 +21,10 @@ import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.model.ExpressMetadata;
 import com.mercadopago.android.px.model.PayerCost;
 import com.mercadopago.android.px.model.PaymentMethod;
-import com.mercadopago.android.px.model.PaymentMethodSearch;
 import com.mercadopago.android.px.model.PaymentTypes;
 import com.mercadopago.android.px.model.Token;
 import com.mercadopago.android.px.model.exceptions.ApiException;
+import com.mercadopago.android.px.model.internal.InitResponse;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.utils.StubFailMpCall;
 import com.mercadopago.android.px.utils.StubSuccessMpCall;
@@ -56,7 +56,7 @@ public class PaymentServiceTest {
     @Mock private TokenRepository tokenRepository;
     @Mock private InstructionsRepository instructionsRepository;
     @Mock private InitRepository initRepository;
-    @Mock private PaymentMethodSearch paymentMethodSearch;
+    @Mock private InitResponse initResponse;
     @Mock private List<ExpressMetadata> expressMetadata;
     @Mock private AmountConfigurationRepository amountConfigurationRepository;
 
@@ -183,12 +183,12 @@ public class PaymentServiceTest {
     }
 
     private Card creditCardPresetMock() {
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         when(expressMetadata.get(0)).thenReturn(node);
         when(node.getPaymentTypeId()).thenReturn(PaymentTypes.CREDIT_CARD);
         when(node.getCard()).thenReturn(cardMetadata);
         final Card card = mock(Card.class);
-        when(paymentMethodSearch.getCardById(node.getCard().getId())).thenReturn(card);
+        when(initResponse.getCardById(node.getCard().getId())).thenReturn(card);
         return card;
     }
 }

@@ -25,9 +25,9 @@ import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.model.ExpressMetadata;
 import com.mercadopago.android.px.model.Item;
 import com.mercadopago.android.px.model.PayerCost;
-import com.mercadopago.android.px.model.PaymentMethodSearch;
 import com.mercadopago.android.px.model.Site;
 import com.mercadopago.android.px.model.Sites;
+import com.mercadopago.android.px.model.internal.InitResponse;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.utils.StubSuccessMpCall;
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public class ExpressPaymentPresenterTest {
     private AmountRepository amountRepository;
 
     @Mock
-    private PaymentMethodSearch paymentMethodSearch;
+    private InitResponse initResponse;
 
     @Mock
     private ExpressMetadata expressMetadata;
@@ -113,9 +113,8 @@ public class ExpressPaymentPresenterTest {
         when(configuration.getAdvancedConfiguration()).thenReturn(advancedConfiguration);
         when(advancedConfiguration.getDynamicDialogConfiguration()).thenReturn(dynamicDialogConfiguration);
         when(advancedConfiguration.getCustomStringConfiguration()).thenReturn(mock(CustomStringConfiguration.class));
-        when(initRepository.init())
-            .thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
-        when(paymentMethodSearch.getExpress()).thenReturn(Collections.singletonList(expressMetadata));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
+        when(initResponse.getExpress()).thenReturn(Collections.singletonList(expressMetadata));
         when(expressMetadata.getCard()).thenReturn(cardMetadata);
         when(expressMetadata.isCard()).thenReturn(true);
         when(cardMetadata.getId()).thenReturn("123");

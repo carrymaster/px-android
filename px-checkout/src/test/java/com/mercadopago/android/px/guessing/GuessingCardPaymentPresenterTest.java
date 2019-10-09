@@ -8,8 +8,8 @@ import com.mercadopago.android.px.internal.features.guessing_card.GuessingCardPa
 import com.mercadopago.android.px.internal.features.uicontrollers.card.CardView;
 import com.mercadopago.android.px.internal.repository.BankDealsRepository;
 import com.mercadopago.android.px.internal.repository.CardTokenRepository;
-import com.mercadopago.android.px.internal.repository.InitRepository;
 import com.mercadopago.android.px.internal.repository.IdentificationRepository;
+import com.mercadopago.android.px.internal.repository.InitRepository;
 import com.mercadopago.android.px.internal.repository.IssuersRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.SummaryAmountRepository;
@@ -29,19 +29,18 @@ import com.mercadopago.android.px.model.Identification;
 import com.mercadopago.android.px.model.IdentificationType;
 import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.PaymentMethod;
-import com.mercadopago.android.px.model.PaymentMethodSearch;
 import com.mercadopago.android.px.model.PaymentRecovery;
 import com.mercadopago.android.px.model.PaymentTypes;
 import com.mercadopago.android.px.model.Token;
 import com.mercadopago.android.px.model.exceptions.ApiException;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
+import com.mercadopago.android.px.model.internal.InitResponse;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.preferences.PaymentPreference;
 import com.mercadopago.android.px.utils.CardTestUtils;
 import com.mercadopago.android.px.utils.StubFailMpCall;
 import com.mercadopago.android.px.utils.StubSuccessMpCall;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
@@ -82,7 +81,7 @@ public class GuessingCardPaymentPresenterTest {
     @Mock private CheckoutPreference checkoutPreference;
     @Mock private PaymentPreference paymentPreference;
 
-    @Mock private PaymentMethodSearch paymentMethodSearch;
+    @Mock private InitResponse initResponse;
     @Mock private AdvancedConfiguration advancedConfiguration;
     @Mock private List<IdentificationType> identificationTypes;
 
@@ -94,8 +93,8 @@ public class GuessingCardPaymentPresenterTest {
         when(paymentSettingRepository.getCheckoutPreference()).thenReturn(checkoutPreference);
         when(checkoutPreference.getPaymentPreference()).thenReturn(paymentPreference);
         final List<PaymentMethod> pm = PaymentMethods.getPaymentMethodListMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
-        when(paymentMethodSearch.getPaymentMethods()).thenReturn(pm);
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
+        when(initResponse.getPaymentMethods()).thenReturn(pm);
         when(advancedConfiguration.isBankDealsEnabled()).thenReturn(true);
         whenGetBankDealsAsync();
         identificationTypes = whenGetIdentificationTypesAsyncWithoutAccessToken();
@@ -131,7 +130,7 @@ public class GuessingCardPaymentPresenterTest {
         final ApiException apiException = mock(ApiException.class);
 
         when(identificationRepository.getIdentificationTypes())
-            .thenReturn(new StubFailMpCall<List<IdentificationType>>(apiException));
+            .thenReturn(new StubFailMpCall<>(apiException));
 
         presenter.getIdentificationTypesAsync();
 
@@ -187,7 +186,7 @@ public class GuessingCardPaymentPresenterTest {
         final List<PaymentMethod> stubGuessedPaymentMethods = new ArrayList<>();
         stubGuessedPaymentMethods.add(PaymentMethods.getPaymentMethodOnVisa());
         stubGuessedPaymentMethods.add(PaymentMethods.getPaymentMethodOnDebit());
-        when(paymentPreference.getSupportedPaymentMethods(paymentMethodSearch.getPaymentMethods()))
+        when(paymentPreference.getSupportedPaymentMethods(initResponse.getPaymentMethods()))
             .thenReturn(stubGuessedPaymentMethods);
 
         presenter.initialize();
@@ -315,7 +314,7 @@ public class GuessingCardPaymentPresenterTest {
     @Test
     public void whenGetPaymentMethodFailsThenHideProgress() {
         final ApiException apiException = mock(ApiException.class);
-        when(initRepository.init()).thenReturn(new StubFailMpCall<PaymentMethodSearch>(apiException));
+        when(initRepository.init()).thenReturn(new StubFailMpCall<>(apiException));
 
         presenter.initialize();
 
@@ -625,17 +624,13 @@ public class GuessingCardPaymentPresenterTest {
 
         //We only have visa and master
         final List<PaymentMethod> paymentMethodList = PaymentMethods.getPaymentMethodListWithTwoOptions();
-        final PaymentMethodSearch paymentMethodSearch = mock(PaymentMethodSearch.class);
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
-        when(paymentMethodSearch.getPaymentMethods()).thenReturn(paymentMethodList);
-
-        //We exclude master
-        final Collection<String> excludedPaymentMethodIds = new ArrayList<>();
-        excludedPaymentMethodIds.add("master");
+        final InitResponse initResponse = mock(InitResponse.class);
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
+        when(initResponse.getPaymentMethods()).thenReturn(paymentMethodList);
 
         when(userSelectionRepository.getPaymentType()).thenReturn(PaymentTypes.CREDIT_CARD);
 
-        when(paymentPreference.getSupportedPaymentMethods(paymentMethodSearch.getPaymentMethods()))
+        when(paymentPreference.getSupportedPaymentMethods(initResponse.getPaymentMethods()))
             .thenReturn(Collections.singletonList(paymentMethodList.get(0)));
 
         presenter.initialize();

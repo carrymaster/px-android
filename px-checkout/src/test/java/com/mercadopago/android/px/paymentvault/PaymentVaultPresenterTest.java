@@ -20,13 +20,13 @@ import com.mercadopago.android.px.mocks.PaymentMethodSearchs;
 import com.mercadopago.android.px.model.CustomSearchItem;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
 import com.mercadopago.android.px.model.PaymentMethod;
-import com.mercadopago.android.px.model.PaymentMethodSearch;
 import com.mercadopago.android.px.model.PaymentMethodSearchItem;
 import com.mercadopago.android.px.model.PaymentMethods;
 import com.mercadopago.android.px.model.PaymentTypes;
 import com.mercadopago.android.px.model.Site;
 import com.mercadopago.android.px.model.exceptions.ApiException;
 import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
+import com.mercadopago.android.px.model.internal.InitResponse;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.preferences.PaymentPreference;
 import com.mercadopago.android.px.utils.ReflectionArgumentMatchers;
@@ -104,8 +104,8 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenNoPaymentMethodsAvailableThenShowError() {
-        final PaymentMethodSearch paymentMethodSearch = new PaymentMethodSearch();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = new InitResponse();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
@@ -114,28 +114,28 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenPaymentMethodSearchHasItemsShowThem() {
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getPaymentMethodWithoutCustomOptionsMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodWithoutCustomOptionsMLA();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
         final List<PaymentMethodViewModel> models =
-            new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups());
+            new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups());
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
     }
 
     @Test
     public void whenPaymentMethodSearchHasPayerCustomOptionsShowThem() {
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
         final List<PaymentMethodViewModel> models =
             new CustomSearchOptionViewModelMapper(presenter, disabledPaymentMethodRepository)
-                .map(paymentMethodSearch.getCustomSearchItems());
-        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups()));
+                .map(initResponse.getCustomSearchItems());
+        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups()));
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
     }
@@ -144,21 +144,20 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenOnlyUniqueSearchItemAvailableRestartWithItSelected() {
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getPaymentMethodSearchWithOnlyTicketMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithOnlyTicketMLA();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         when(discountRepository.getCurrentConfiguration()).thenReturn(WITHOUT_DISCOUNT);
 
         presenter.initialize();
 
-        verify(view).showSelectedItem(paymentMethodSearch.getGroups().get(0));
+        verify(view).showSelectedItem(initResponse.getGroups().get(0));
     }
 
     @Test
     public void whenOnlyCardPaymentTypeAvailableStartCardFlow() {
-        final PaymentMethodSearch paymentMethodSearch =
-            PaymentMethodSearchs.getPaymentMethodSearchWithOnlyCreditCardMLA();
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithOnlyCreditCardMLA();
         final PaymentVaultPresenter presenter = getPresenter();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         when(discountRepository.getCurrentConfiguration()).thenReturn(WITHOUT_DISCOUNT);
         when(advancedConfiguration.isAmountRowEnabled()).thenReturn(true);
         when(paymentVaultTitleSolver.solveTitle()).thenReturn(CUSTOM_PAYMENT_VAULT_TITLE);
@@ -177,47 +176,46 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenOnlyCardPaymentTypeAvailableAndCardAvailableThenDoNotSelectAutomatically() {
-        final PaymentMethodSearch paymentMethodSearch =
-            PaymentMethodSearchs.getPaymentMethodSearchWithOnlyCreditCardAndOneCardMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithOnlyCreditCardAndOneCardMLA();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         when(advancedConfiguration.isAmountRowEnabled()).thenReturn(true);
 
         presenter.initialize();
 
-        verifyDoNotSelectCustomOptionAutomatically(paymentMethodSearch);
+        verifyDoNotSelectCustomOptionAutomatically(initResponse);
     }
 
     @Test
     public void whenOnlyCardPaymentTypeAvailableAndAccountMoneyAvailableThenDoNotSelectAutomatically() {
-        final PaymentMethodSearch paymentMethodSearch =
+        final InitResponse initResponse =
             PaymentMethodSearchs.getPaymentMethodSearchWithOnlyCreditCardAndAccountMoneyMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         when(advancedConfiguration.isAmountRowEnabled()).thenReturn(true);
 
         presenter.initialize();
 
-        verifyDoNotSelectCustomOptionAutomatically(paymentMethodSearch);
+        verifyDoNotSelectCustomOptionAutomatically(initResponse);
     }
 
     @Test
     public void whenOnlyOffPaymentTypeAvailableAndAccountMoneyAvailableThenDoNotSelectAutomatically() {
-        final PaymentMethodSearch paymentMethodSearch =
+        final InitResponse initResponse =
             PaymentMethodSearchs.getPaymentMethodSearchWithOnlyOneOffTypeAndAccountMoneyMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         when(advancedConfiguration.isAmountRowEnabled()).thenReturn(true);
 
         presenter.initialize();
 
-        verifyDoNotSelectCustomOptionAutomatically(paymentMethodSearch);
+        verifyDoNotSelectCustomOptionAutomatically(initResponse);
     }
 
     //User selections
 
     @Test
     public void whenItemWithChildrenSelectedThenShowChildren() {
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
-        final PaymentMethodSearchItem selectedSearchItem = paymentMethodSearch.getGroups().get(1);
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
+        final PaymentMethodSearchItem selectedSearchItem = initResponse.getGroups().get(1);
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.setSelectedSearchItem(selectedSearchItem);
 
@@ -234,11 +232,11 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenCardPaymentTypeSelectedThenStartCardFlow() {
         final PaymentVaultPresenter presenter = getBasePresenter(stubView);
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
-        presenter.selectItem(paymentMethodSearch.getGroups().get(0));
+        presenter.selectItem(initResponse.getGroups().get(0));
 
         Assert.assertTrue(stubView.cardFlowStarted);
     }
@@ -246,11 +244,11 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenSavedCardSelectedThenStartSavedCardFlow() {
         final PaymentVaultPresenter presenter = getBasePresenter(stubView);
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
-        presenter.selectItem(paymentMethodSearch.getCustomSearchItems().get(1));
+        presenter.selectItem(initResponse.getCustomSearchItems().get(1));
 
         Assert.assertTrue(stubView.cardFlowStarted);
     }
@@ -258,29 +256,27 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenPaymentMethodSearchItemIsNotCardAndDoesNotHaveChildrenThenStartPaymentMethodsSelection() {
         final PaymentVaultPresenter presenter = getBasePresenter(stubView);
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
-        paymentMethodSearch.getGroups().get(1).getChildren()
-            .removeAll(paymentMethodSearch.getGroups().get(1).getChildren());
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
+        initResponse.getGroups().get(1).getChildren().removeAll(initResponse.getGroups().get(1).getChildren());
 
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
-        presenter.selectItem(paymentMethodSearch.getGroups().get(1));
+        presenter.selectItem(initResponse.getGroups().get(1));
         Assert.assertTrue(stubView.paymentMethodSelectionStarted);
     }
 
     @Test
     public void whenPaymentMethodTypeSelectedThenSelectPaymentMethod() {
         final PaymentVaultPresenter presenter = getBasePresenter(stubView);
-        final PaymentMethodSearch paymentMethodSearch =
-            PaymentMethodSearchs.getPaymentMethodSearchWithPaymentMethodOnTop();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithPaymentMethodOnTop();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
-        presenter.selectItem(paymentMethodSearch.getGroups().get(1));
+        presenter.selectItem(initResponse.getGroups().get(1));
 
-        Assert.assertEquals(paymentMethodSearch.getGroups().get(1).getId(), stubView.selectedPaymentMethod.getId());
+        Assert.assertEquals(initResponse.getGroups().get(1).getId(), stubView.selectedPaymentMethod.getId());
     }
 
     //Payment Preference tests
@@ -321,12 +317,12 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenMaxSavedCardNotSetThenDoNotLimitCardsShown() {
         final PaymentVaultPresenter presenter = getBasePresenter(stubView);
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
-        assertEquals(paymentMethodSearch.getCustomSearchItems().size() + paymentMethodSearch.getGroups().size(),
+        assertEquals(initResponse.getCustomSearchItems().size() + initResponse.getGroups().size(),
             stubView.searchItemsShown.size());
     }
 
@@ -340,7 +336,7 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenGroupsRetrievalReturnsAliExceptionThenShowError() {
         final ApiException apiException = new ApiException();
-        when(initRepository.init()).thenReturn(new StubFailMpCall<PaymentMethodSearch>(apiException));
+        when(initRepository.init()).thenReturn(new StubFailMpCall<>(apiException));
 
         presenter.initialize();
 
@@ -349,35 +345,34 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenResourcesRetrievalFailedAndRecoverRequestedThenRepeatRetrieval() {
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getCompletePaymentMethodSearchMLA();
+        final InitResponse initResponse = PaymentMethodSearchs.getInitResponse();
         final ApiException apiException = new ApiException();
-        when(initRepository.init()).thenReturn(new StubFailMpCall<PaymentMethodSearch>(apiException));
+        when(initRepository.init()).thenReturn(new StubFailMpCall<>(apiException));
 
         presenter.initialize();
 
-        when(initRepository.init())
-            .thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         //Presenter gets resources, fails
         presenter.recoverFromFailure();
 
         final List<PaymentMethodViewModel> models =
             new CustomSearchOptionViewModelMapper(presenter, disabledPaymentMethodRepository)
-                .map(paymentMethodSearch.getCustomSearchItems());
-        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups()));
+                .map(initResponse.getCustomSearchItems());
+        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups()));
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
     }
 
     @Test
     public void whenPaymentMethodSearchSetAndHasItemsThenShowThem() {
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getPaymentMethodWithoutCustomOptionsMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodWithoutCustomOptionsMLA();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
         final List<PaymentMethodViewModel> models =
-            new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups());
+            new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups());
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
     }
@@ -385,15 +380,15 @@ public class PaymentVaultPresenterTest {
     @Test
     public void whenHasCustomItemsThenShowThemAll() {
         // 6 Saved Cards + Account Money
-        final PaymentMethodSearch paymentMethodSearch = PaymentMethodSearchs.getPaymentMethodSearchWithSavedCardsMLA();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithSavedCardsMLA();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
 
         presenter.initialize();
 
         final List<PaymentMethodViewModel> models =
             new CustomSearchOptionViewModelMapper(presenter, disabledPaymentMethodRepository)
-                .map(paymentMethodSearch.getCustomSearchItems());
-        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups()));
+                .map(initResponse.getCustomSearchItems());
+        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups()));
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
     }
@@ -421,15 +416,14 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenHasConsumerCreditsVerifyIsShown() {
-        final PaymentMethodSearch paymentMethodSearch =
-            PaymentMethodSearchs.getPaymentMethodSearchWithOnlyMercadoCredito();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithOnlyMercadoCredito();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         presenter.initialize();
 
         final List<PaymentMethodViewModel> models =
             new CustomSearchOptionViewModelMapper(presenter, disabledPaymentMethodRepository)
-                .map(paymentMethodSearch.getCustomSearchItems());
-        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups()));
+                .map(initResponse.getCustomSearchItems());
+        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups()));
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
 
@@ -441,19 +435,18 @@ public class PaymentVaultPresenterTest {
 
     @Test
     public void whenConsumerCreditsIsSelectedVerifyFlow() {
-        final PaymentMethodSearch paymentMethodSearch =
-            PaymentMethodSearchs.getPaymentMethodSearchWithOnlyMercadoCredito();
-        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
+        final InitResponse initResponse = PaymentMethodSearchs.getPaymentMethodSearchWithOnlyMercadoCredito();
+        when(initRepository.init()).thenReturn(new StubSuccessMpCall<>(initResponse));
         presenter.initialize();
 
         final List<PaymentMethodViewModel> models =
             new CustomSearchOptionViewModelMapper(presenter, disabledPaymentMethodRepository)
-                .map(paymentMethodSearch.getCustomSearchItems());
-        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups()));
+                .map(initResponse.getCustomSearchItems());
+        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups()));
 
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
 
-        final CustomSearchItem consumerCreditsItem = paymentMethodSearch.getCustomSearchItems()
+        final CustomSearchItem consumerCreditsItem = initResponse.getCustomSearchItems()
             .stream()
             .filter(item -> item.getPaymentMethodId().equals(PaymentMethods.CONSUMER_CREDITS))
             .findAny().orElse(null);
@@ -479,18 +472,18 @@ public class PaymentVaultPresenterTest {
         verify(view, atLeastOnce()).hideProgress();
     }
 
-    private void verifyDoNotSelectCustomOptionAutomatically(final PaymentMethodSearch paymentMethodSearch) {
+    private void verifyDoNotSelectCustomOptionAutomatically(final InitResponse initResponse) {
         verifyInitializeWithGroups();
         final List<PaymentMethodViewModel> models =
             new CustomSearchOptionViewModelMapper(presenter, disabledPaymentMethodRepository)
-                .map(paymentMethodSearch.getCustomSearchItems());
-        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(paymentMethodSearch.getGroups()));
+                .map(initResponse.getCustomSearchItems());
+        models.addAll(new PaymentMethodSearchOptionViewModelMapper(presenter).map(initResponse.getGroups()));
         verify(view).showSearchItems(ReflectionArgumentMatchers.reflectionEquals(models));
         verify(view).setTitle(paymentVaultTitleSolver.solveTitle());
         verifyNoMoreInteractions(view);
     }
 
-    private static class StubView implements PaymentVaultView {
+    /* default */ static class StubView implements PaymentVaultView {
 
         /* default */ List<PaymentMethodViewModel> searchItemsShown;
         /* default */ boolean cardFlowStarted = false;

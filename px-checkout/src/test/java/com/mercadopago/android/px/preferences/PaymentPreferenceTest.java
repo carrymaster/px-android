@@ -5,12 +5,14 @@ import com.mercadopago.android.px.model.PaymentMethod;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * Created by mreverter on 29/12/15.
  */
 public class PaymentPreferenceTest {
 
+    @Test
     public void testIfDefaultInstallmentsSetAndExistsInListReturnIt() {
         List<PayerCost> payerCosts = getPayerCosts();
 

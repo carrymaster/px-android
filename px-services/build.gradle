@@ -11,7 +11,7 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "API_ENVIRONMENT", "\"\"" // TODO future change
-            buildConfigField "String", "API_VERSION", "\"beta\""
+            buildConfigField "String", "API_VERSION", "\"alpha\""
             buildConfigField "boolean", "HTTP_CLIENT_LOG", "true"
         }
 

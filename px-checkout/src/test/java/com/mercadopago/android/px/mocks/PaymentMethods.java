@@ -32,7 +32,7 @@ public class PaymentMethods {
     }
 
     public static PaymentMethod getPaymentMethodOnDebit() {
-        final String json = ResourcesUtil.getStringResource("payment_method_on_debit.json");
+        final String json = ResourcesUtil.getStringResource("pm_visa_debito.json");
         return JsonUtil.getInstance().fromJson(json, PaymentMethod.class);
     }
 
@@ -46,13 +46,8 @@ public class PaymentMethods {
         return JsonUtil.getInstance().fromJson(json, PaymentMethod.class);
     }
 
-    public static PaymentMethod getPaymentMethodOnMasterWithoutSecurityCodeSettings() {
-        final String json = ResourcesUtil.getStringResource("payment_method_on_master_without_sec_code_settings.json");
-        return JsonUtil.getInstance().fromJson(json, PaymentMethod.class);
-    }
-
     public static PaymentMethod getPaymentMethodOff() {
-        final String json = ResourcesUtil.getStringResource("payment_method_pagofacil.json");
+        final String json = ResourcesUtil.getStringResource("pm_pagofacil_off.json");
         return JsonUtil.getInstance().fromJson(json, PaymentMethod.class);
     }
 
