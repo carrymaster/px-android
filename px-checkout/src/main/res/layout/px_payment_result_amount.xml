@@ -16,6 +16,7 @@
         android:layout_marginEnd="@dimen/px_xxxs_margin"
         android:layout_marginRight="@dimen/px_xxxs_margin"
         android:maxLines="1"
+        app:customStyle="semi_bold"
         tools:text="3x $500"/>
 
     <com.mercadopago.android.px.internal.view.MPTextView

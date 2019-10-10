@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import com.mercadolibre.android.ui.font.Font;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 
 public class SpannableFormatter extends ChainFormatter {
@@ -54,11 +54,7 @@ public class SpannableFormatter extends ChainFormatter {
     }
 
     private void updateTextStyle(final int indexStart, final int indexEnd) {
-        if (semiBoldStyle) {
-            ViewUtils.setSemiBoldFontInSpannable(indexStart, indexEnd, spannableStringBuilder, context);
-        } else {
-            ViewUtils
-                .setFontInSpannable(indexStart, indexEnd, spannableStringBuilder, Font.REGULAR.getFontPath(), context);
-        }
+        ViewUtils.setFontInSpannable(context, semiBoldStyle ? PxFont.SEMI_BOLD : PxFont.REGULAR, spannableStringBuilder,
+            indexStart, indexEnd);
     }
 }

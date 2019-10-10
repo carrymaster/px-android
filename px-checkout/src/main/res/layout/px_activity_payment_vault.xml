@@ -55,7 +55,7 @@
                         android:background="@drawable/px_title_toolbar"
                         android:textSize="17dp"
                         android:visibility="visible"
-                        app:font_style="mono_regular"
+                        app:customStyle="monospace"
                         tools:text="10.123123"/>
 
                 </android.support.v7.widget.Toolbar>

@@ -46,6 +46,6 @@
         android:textColor="@color/px_toolbar_text"
         android:background="@drawable/px_title_toolbar"
         android:visibility="gone"
-        app:font_style="mono_regular"/>
+        app:customStyle="monospace"/>
 
 </android.support.v7.widget.Toolbar>

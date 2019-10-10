@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.core.DynamicDialogCreator;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.internal.viewmodel.EmptyLocalized;
 import com.mercadopago.android.px.internal.viewmodel.IDetailColor;
@@ -82,8 +83,7 @@ public class AmountDescriptorView extends LinearLayout {
         spannableStringBuilder.append(charSequence);
 
         if (isSemiBold) {
-            ViewUtils.setSemiBoldFontInSpannable(0, spannableStringBuilder.length(),
-                spannableStringBuilder, getContext());
+            ViewUtils.setFontInSpannable(getContext(), PxFont.SEMI_BOLD, spannableStringBuilder);
         }
 
         if (isEmpty(charSequence)) {

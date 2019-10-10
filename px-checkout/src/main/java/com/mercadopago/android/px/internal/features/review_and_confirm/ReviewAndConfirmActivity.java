@@ -45,7 +45,8 @@ import com.mercadopago.android.px.internal.features.review_and_confirm.models.It
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.PaymentModel;
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.SummaryModel;
 import com.mercadopago.android.px.internal.features.review_and_confirm.models.TermsAndConditionsModel;
-import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
+import com.mercadopago.android.px.internal.font.FontHelper;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.ErrorUtil;
 import com.mercadopago.android.px.internal.util.FragmentUtil;
 import com.mercadopago.android.px.internal.util.JsonUtil;
@@ -264,10 +265,7 @@ public final class ReviewAndConfirmActivity extends PXActivity<ReviewAndConfirmP
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(getString(R.string.px_activity_checkout_title));
-        if (FontCache.hasTypeface(FontCache.CUSTOM_REGULAR_FONT)) {
-            collapsingToolbarLayout.setCollapsedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-            collapsingToolbarLayout.setExpandedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-        }
+        FontHelper.setFont(collapsingToolbarLayout, PxFont.REGULAR);
     }
 
     private void initFloatingButton(final ViewGroup scrollView, @Nullable final LinkableText linkableText) {

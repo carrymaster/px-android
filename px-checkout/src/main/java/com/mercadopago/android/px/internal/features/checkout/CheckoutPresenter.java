@@ -95,12 +95,6 @@ public class CheckoutPresenter extends BasePresenter<Checkout.View> implements P
         }
     }
 
-    @Override
-    public void attachView(final Checkout.View view) {
-        super.attachView(view);
-        getView().fetchFonts();
-    }
-
     /* default */ void startFlow(final PaymentMethodSearch paymentMethodSearch) {
 
         new DefaultPaymentMethodDriver(paymentMethodSearch,

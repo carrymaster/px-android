@@ -105,7 +105,7 @@
                         android:layout_gravity="right|end|bottom"
                         android:textColor="@color/px_base_text"
                         android:textSize="18dp"
-                        app:font_style="mono_regular"
+                        app:customStyle="monospace"
                         tools:text="1234"/>
 
                 </FrameLayout>
@@ -135,7 +135,7 @@
                             app:autoSizeMinTextSize="10dp"
                             app:autoSizeStepGranularity="1dp"
                             app:autoSizeTextType="uniform"
-                            app:font_style="mono_regular"
+                            app:customStyle="monospace"
                             tools:text="1234 1234 1234 1234"/>
 
                     </FrameLayout>

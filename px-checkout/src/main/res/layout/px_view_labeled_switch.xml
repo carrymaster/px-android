@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:textAppearance="@style/MLFont"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="Account money label super large money label super large"/>

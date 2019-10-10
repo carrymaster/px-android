@@ -60,7 +60,6 @@
             android:paddingRight="@dimen/px_title_pager_padding_right"
             android:paddingStart="@dimen/px_m_margin"
             android:text="@string/px_select_installments_title"
-            android:textAppearance="@style/MLFont.Regular"
             android:textColor="@color/px_expressCheckoutInstallmentTitle"
             android:textSize="@dimen/px_s_text"/>
 

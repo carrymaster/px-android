@@ -70,8 +70,6 @@ import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 
         void showCheckoutExceptionError(final CheckoutPreferenceException checkoutPreferenceException);
 
-        void fetchFonts();
-
         void showFailureRecoveryError();
     }
 

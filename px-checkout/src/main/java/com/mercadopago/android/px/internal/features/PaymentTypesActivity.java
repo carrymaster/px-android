@@ -18,9 +18,10 @@ import com.mercadopago.android.px.internal.base.PXActivity;
 import com.mercadopago.android.px.internal.callbacks.OnSelectedCallback;
 import com.mercadopago.android.px.internal.callbacks.RecyclerItemClickListener;
 import com.mercadopago.android.px.internal.controllers.CheckoutTimer;
-import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
 import com.mercadopago.android.px.internal.features.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.android.px.internal.features.uicontrollers.card.FrontCardView;
+import com.mercadopago.android.px.internal.font.FontHelper;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.ErrorUtil;
 import com.mercadopago.android.px.internal.util.JsonUtil;
 import com.mercadopago.android.px.internal.util.ScaleUtil;
@@ -211,9 +212,6 @@ public class PaymentTypesActivity extends PXActivity implements PaymentTypesActi
     private void loadLowResViews() {
         loadToolbarArrow(mLowResToolbar);
         mLowResTitleToolbar.setText(getString(R.string.px_payment_types_title));
-        if (FontCache.hasTypeface(FontCache.CUSTOM_REGULAR_FONT)) {
-            mLowResTitleToolbar.setTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-        }
     }
 
     private void loadNormalViews() {
@@ -234,10 +232,7 @@ public class PaymentTypesActivity extends PXActivity implements PaymentTypesActi
     }
 
     private void setCustomFontNormal() {
-        if (FontCache.hasTypeface(FontCache.CUSTOM_REGULAR_FONT)) {
-            mCollapsingToolbar.setCollapsedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-            mCollapsingToolbar.setExpandedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-        }
+        FontHelper.setFont(mCollapsingToolbar, PxFont.REGULAR);
     }
 
     private void loadToolbarArrow(Toolbar toolbar) {

@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    app:font_style="light"
+                    app:customStyle="light"
                     android:textSize="@dimen/px_xs_text"
                     android:textColor="@color/px_toolbar_text"
                     android:id="@+id/mpsdkNoInstallmentsRateTextView"/>

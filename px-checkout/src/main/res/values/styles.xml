@@ -134,4 +134,15 @@
         <item name="android:textColor">@color/ui_meli_grey</item>
     </style>
 
+    <style name="PXScrollingPagerIndicator">
+        <item name="px_spi_dotColor">@android:color/darker_gray</item>
+        <item name="px_spi_dotSelectedColor">@android:color/darker_gray</item>
+        <item name="px_spi_dotSize">6dp</item>
+        <item name="px_spi_dotSelectedSize">10dp</item>
+        <item name="px_spi_dotSpacing">8dp</item>
+        <item name="px_spi_visibleDotCount">5</item>
+        <item name="px_spi_visibleDotThreshold">2</item>
+        <item name="px_spi_looped">false</item>
+    </style>
+
 </resources>

@@ -17,6 +17,6 @@
         android:includeFontPadding="false"
         android:textColor="@color/px_summary_text_color"
         android:textSize="@dimen/px_l_text"
-        app:font_style="light"
+        app:customStyle="light"
         tools:text="CFT 0,00%"/>
 </LinearLayout>

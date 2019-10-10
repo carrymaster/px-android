@@ -1,39 +1,30 @@
 package com.mercadopago.android.px.internal.view;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
+import com.mercadopago.android.px.internal.font.FontHelper;
+import com.mercadopago.android.px.internal.font.PxFont;
 
 public class MPButton extends AppCompatButton {
 
-    public MPButton(Context context) {
-        super(context);
-        init();
+    public MPButton(final Context context) {
+        this(context, null);
     }
 
-    public MPButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    public MPButton(final Context context, @Nullable final AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public MPButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MPButton(final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
         if (!isInEditMode()) {
-            Typeface tf = getCustomTypeface();
-
-            if (tf != null) {
-                setTypeface(tf);
-            }
+            FontHelper.setFont(this, PxFont.REGULAR);
         }
-    }
-
-    private Typeface getCustomTypeface() {
-        return FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT);
     }
 }

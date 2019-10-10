@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import com.mercadolibre.android.ui.font.Font;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.model.PayerCost;
@@ -44,8 +44,8 @@ public class CFTFormatter extends ChainFormatter {
         spannableStringBuilder.append(separator).append(cftDescription);
         final int textLength = separator.length() + cftDescription.length();
         ViewUtils.setColorInSpannable(textColor, initialIndex, initialIndex + textLength, spannableStringBuilder);
-        ViewUtils.setFontInSpannable(initialIndex, initialIndex + textLength, spannableStringBuilder,
-            Font.REGULAR.getFontPath(), context);
+        ViewUtils.setFontInSpannable(context, PxFont.REGULAR, spannableStringBuilder, initialIndex,
+            initialIndex + textLength);
 
         return spannableStringBuilder;
     }

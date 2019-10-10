@@ -18,12 +18,13 @@ import com.mercadopago.android.px.internal.base.PXActivity;
 import com.mercadopago.android.px.internal.controllers.CheckoutTimer;
 import com.mercadopago.android.px.internal.datasource.PaymentVaultTitleSolverImpl;
 import com.mercadopago.android.px.internal.di.Session;
-import com.mercadopago.android.px.internal.features.payment_methods.PaymentMethodsActivity;
 import com.mercadopago.android.px.internal.features.cardvault.CardVaultActivity;
 import com.mercadopago.android.px.internal.features.disable_payment_method.DisabledPaymentMethodDetailDialog;
 import com.mercadopago.android.px.internal.features.installments.InstallmentsActivity;
 import com.mercadopago.android.px.internal.features.payer_information.PayerInformationActivity;
-import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
+import com.mercadopago.android.px.internal.features.payment_methods.PaymentMethodsActivity;
+import com.mercadopago.android.px.internal.font.FontHelper;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.ErrorUtil;
 import com.mercadopago.android.px.internal.util.JsonUtil;
@@ -210,10 +211,7 @@ public class PaymentVaultActivity extends PXActivity<PaymentVaultPresenter> impl
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-        if (FontCache.hasTypeface(FontCache.CUSTOM_REGULAR_FONT)) {
-            mAppBarLayout.setCollapsedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-            mAppBarLayout.setExpandedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-        }
+        FontHelper.setFont(mAppBarLayout, PxFont.REGULAR);
     }
 
     protected void initializePaymentOptionsRecyclerView() {

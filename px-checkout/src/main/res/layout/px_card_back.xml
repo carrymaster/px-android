@@ -72,7 +72,7 @@
                             android:textColor="@color/px_base_text"
                             android:textSize="16dp"
                             tools:text="123"
-                            app:font_style="mono_regular"/>
+                            app:customStyle="monospace"/>
                     </FrameLayout>
 
                 </FrameLayout>

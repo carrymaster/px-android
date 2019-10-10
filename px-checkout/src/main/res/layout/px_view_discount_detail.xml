@@ -15,10 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="left|start"
-        android:textAppearance="@style/MLFont.Bold.Semi"
         android:textColor="@color/ui_meli_black"
         android:textSize="@dimen/px_xs_text"
-        app:font_style="bold"
+        app:customStyle="semi_bold"
         tools:text="Tope de descuento $ 250"/>
 
     <com.mercadopago.android.px.internal.view.MPTextView
@@ -27,10 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginTop="@dimen/px_xxs_margin"
-        android:textAppearance="@style/MLFont.Light"
         android:textColor="@color/ui_meli_grey"
         android:textSize="@dimen/px_xs_text"
-        app:font_style="light"
+        app:customStyle="light"
         tools:text="Tope disponible para consumir en un único pago. Válido hasta el 1 de agosto de 2019."/>
 
     <com.mercadopago.android.px.internal.view.MPTextView
@@ -40,7 +38,6 @@
         android:layout_gravity="start"
         android:layout_marginTop="@dimen/px_xxs_margin"
         android:text="@string/px_terms_and_conditions"
-        android:textAppearance="@style/MLFont.Regular"
         android:textColor="@color/ui_components_primary_color"
         android:textSize="@dimen/ui_fontsize_xxsmall"
         tools:text="Términos y condiciones"/>
@@ -59,8 +56,7 @@
         android:layout_marginTop="@dimen/px_s_margin"
         android:gravity="start"
         android:text="@string/px_we_apply_the_best_available_discount"
-        android:textAppearance="@style/MLFont.Light"
         android:textColor="@color/ui_meli_grey"
         android:textSize="@dimen/px_xs_text"
-        app:font_style="light"/>
+        app:customStyle="light"/>
 </LinearLayout>

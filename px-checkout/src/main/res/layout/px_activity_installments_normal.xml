@@ -52,7 +52,7 @@
                         android:layout_gravity="center_horizontal"
                         android:textColor="@color/px_toolbar_text"
                         android:textSize="@dimen/px_xs_text"
-                        app:font_style="light"
+                        app:customStyle="light"
                         tools:text="Este es el texto de advertencia"/>
                 </FrameLayout>
 

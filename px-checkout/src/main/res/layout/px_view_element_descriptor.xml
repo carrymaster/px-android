@@ -37,10 +37,9 @@
             android:gravity="center_horizontal"
             android:lineSpacingExtra="0sp"
             android:maxLines="2"
-            android:textAppearance="@style/MLFont.Bold.Semi"
             android:textColor="@color/ui_meli_black"
             android:textSize="@dimen/px_l_text"
-            app:font_style="bold"
+            app:customStyle="semi_bold"
             tools:text="Aysa"/>
 
         <com.mercadopago.android.px.internal.view.MPTextView
@@ -57,10 +56,8 @@
             android:lineSpacingExtra="0sp"
             android:maxLines="1"
             tools:text="Cliente: 123450"
-            android:textAppearance="@style/MLFont.Regular"
             android:textColor="@color/ui_meli_black"
             android:textSize="@dimen/px_xs_text"
-            android:visibility="gone"
-            app:font_style="regular"/>
+            android:visibility="gone"/>
     </LinearLayout>
 </merge>

@@ -20,7 +20,6 @@ import com.mercadopago.android.px.internal.features.plugins.PaymentProcessorActi
 import com.mercadopago.android.px.internal.features.review_and_confirm.ReviewAndConfirmBuilder;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.ErrorUtil;
-import com.mercadopago.android.px.internal.util.FontUtil;
 import com.mercadopago.android.px.internal.util.FragmentUtil;
 import com.mercadopago.android.px.internal.util.JsonUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
@@ -256,11 +255,6 @@ public class CheckoutActivity extends PXActivity<CheckoutPresenter>
     public void showCheckoutExceptionError(final CheckoutPreferenceException checkoutPreferenceException) {
         final String message = ExceptionHandler.getErrorMessage(this, checkoutPreferenceException);
         showError(MercadoPagoError.createNotRecoverable(message));
-    }
-
-    @Override
-    public void fetchFonts() {
-        FontUtil.fetchFonts(this);
     }
 
     @Override

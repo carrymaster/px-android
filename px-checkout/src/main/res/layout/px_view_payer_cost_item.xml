@@ -24,7 +24,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:layout_weight="0.5"
-                android:textAppearance="@style/MLFont.Regular"
                 android:textColor="@color/px_base_text"
                 android:textSize="@dimen/px_s_text"
                 tools:text="3x $ 173"/>
@@ -41,7 +40,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:text="@string/px_zero_rate"
-                    android:textAppearance="@style/MLFont.Regular"
                     android:textColor="@color/px_discount_description"
                     android:textSize="@dimen/px_s_text"
                     android:visibility="gone"/>
@@ -51,7 +49,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:textAppearance="@style/MLFont.Regular"
                     android:textColor="@color/px_color_payer_costs"
                     android:textSize="@dimen/px_s_text"
                     android:visibility="gone"

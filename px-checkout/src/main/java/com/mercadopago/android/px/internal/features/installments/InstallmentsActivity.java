@@ -20,9 +20,10 @@ import com.mercadopago.android.px.internal.controllers.CheckoutTimer;
 import com.mercadopago.android.px.internal.di.ConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.express.installments.InstallmentsAdapter;
-import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
 import com.mercadopago.android.px.internal.features.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.android.px.internal.features.uicontrollers.card.FrontCardView;
+import com.mercadopago.android.px.internal.font.FontHelper;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.util.ErrorUtil;
 import com.mercadopago.android.px.internal.util.JsonUtil;
@@ -185,10 +186,6 @@ public class InstallmentsActivity extends PXActivity<InstallmentsPresenter> impl
     public void loadLowResViews() {
         loadToolbarArrow(lowResToolbar);
         lowResTitleToolbar.setText(getString(R.string.px_card_installments_title));
-
-        if (FontCache.hasTypeface(FontCache.CUSTOM_REGULAR_FONT)) {
-            lowResTitleToolbar.setTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-        }
     }
 
     public void loadNormalViews() {
@@ -222,10 +219,7 @@ public class InstallmentsActivity extends PXActivity<InstallmentsPresenter> impl
     }
 
     private void setCustomFontNormal() {
-        if (FontCache.hasTypeface(FontCache.CUSTOM_REGULAR_FONT)) {
-            collapsingToolbar.setCollapsedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-            collapsingToolbar.setExpandedTitleTypeface(FontCache.getTypeface(FontCache.CUSTOM_REGULAR_FONT));
-        }
+        FontHelper.setFont(collapsingToolbar, PxFont.REGULAR);
     }
 
     private void hideHeader() {

@@ -3,10 +3,8 @@ package com.mercadopago.android.px.core;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.mercadolibre.android.ui.font.Font;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.configuration.TrackingConfiguration;
@@ -14,7 +12,7 @@ import com.mercadopago.android.px.internal.callbacks.CallbackHolder;
 import com.mercadopago.android.px.internal.datasource.MercadoPagoPaymentConfiguration;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.checkout.CheckoutActivity;
-import com.mercadopago.android.px.internal.features.uicontrollers.FontCache;
+import com.mercadopago.android.px.internal.font.FontHelper;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.PaymentResult;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
@@ -82,7 +80,7 @@ public final class MercadoPagoCheckout {
     private void startIntent(@NonNull final Context context, @NonNull final Intent checkoutIntent,
         final int requestCode) {
 
-        initFonts(context);
+        FontHelper.init(context);
         final Session session = Session.getInstance();
 
         if (!prefetch) {
@@ -99,27 +97,6 @@ public final class MercadoPagoCheckout {
             //https://developer.android.com/about/versions/pie/android-9.0-changes-all#fant-required
             checkoutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(checkoutIntent);
-        }
-    }
-
-    private void initFonts(@NonNull final Context context) {
-        if (TextUtil.isNotEmpty(Font.LIGHT.getFontPath())) {
-            setCustomFont(context, FontCache.CUSTOM_LIGHT_FONT, Font.LIGHT.getFontPath());
-        }
-        if (TextUtil.isNotEmpty(Font.REGULAR.getFontPath())) {
-            setCustomFont(context, FontCache.CUSTOM_REGULAR_FONT, Font.REGULAR.getFontPath());
-        }
-    }
-
-    /**
-     * @deprecated we will not support this mechanism anymore.
-     */
-    @Deprecated
-    private static void setCustomFont(@NonNull final Context context, final String fontType, final String fontPath) {
-        final Typeface typeFace;
-        if (!FontCache.hasTypeface(fontType)) {
-            typeFace = Typeface.createFromAsset(context.getAssets(), fontPath);
-            FontCache.setTypeface(fontType, typeFace);
         }
     }
 

@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textAppearance="@style/MLFont.Regular"
             android:textColor="@color/px_expressCheckoutTextColor"
             android:textSize="@dimen/px_s_text"
             tools:text="Total"/>
@@ -39,7 +38,6 @@
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/MLFont.Regular"
         android:textColor="@color/px_expressCheckoutTextColor"
         android:textSize="@dimen/px_s_text"
         tools:text="$124"/>

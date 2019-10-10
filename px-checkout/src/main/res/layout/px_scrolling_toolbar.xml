@@ -55,7 +55,7 @@
             android:textSize="17dp"
             android:background="@drawable/px_title_toolbar"
             android:visibility="gone"
-            app:font_style="mono_regular"
+            app:customStyle="monospace"
             style="@style/px_title_text"/>
 
 

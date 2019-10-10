@@ -48,7 +48,7 @@
                     android:textColor="@color/px_toolbar_text"
                     android:textSize="17dp"
                     android:visibility="gone"
-                    app:font_style="mono_regular"/>
+                    app:customStyle="monospace"/>
 
                 <FrameLayout
                     android:id="@+id/mpsdkCardViewContainer"

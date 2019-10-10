@@ -89,7 +89,7 @@
                         app:autoSizeMinTextSize="10dp"
                         app:autoSizeStepGranularity="1dp"
                         app:autoSizeTextType="uniform"
-                        app:font_style="mono_regular"/>
+                        app:customStyle="monospace"/>
 
                     <com.mercadopago.android.px.internal.view.MPTextView
                         android:id="@+id/mpsdkIdNumberView"
@@ -102,7 +102,7 @@
                         app:autoSizeMinTextSize="8dp"
                         app:autoSizeStepGranularity="1dp"
                         app:autoSizeTextType="uniform"
-                        app:font_style="mono_regular"
+                        app:customStyle="monospace"
                         tools:text="123123122"/>
 
 

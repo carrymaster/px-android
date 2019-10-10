@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import com.mercadolibre.android.ui.font.Font;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 
 public class InterestFormatter {
@@ -44,6 +44,6 @@ public class InterestFormatter {
     }
 
     private void updateTextFont(final int indexStart, final int indexEnd) {
-        ViewUtils.setFontInSpannable(indexStart, indexEnd, spannableStringBuilder, Font.REGULAR.getFontPath(), context);
+        ViewUtils.setFontInSpannable(context, PxFont.REGULAR, spannableStringBuilder, indexStart, indexEnd);
     }
 }

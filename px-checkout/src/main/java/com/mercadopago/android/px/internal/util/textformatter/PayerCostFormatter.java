@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import com.mercadolibre.android.ui.font.Font;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.internal.font.PxFont;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.model.PayerCost;
 
@@ -46,8 +46,7 @@ public class PayerCostFormatter {
         final int endIndex = initialIndex + textLength;
 
         ViewUtils.setColorInSpannable(textColor, initialIndex, endIndex, spannableStringBuilder);
-        ViewUtils.setFontInSpannable(initialIndex, endIndex, spannableStringBuilder,
-            Font.REGULAR.getFontPath(), context);
+        ViewUtils.setFontInSpannable(context, PxFont.REGULAR, spannableStringBuilder, initialIndex, endIndex);
 
         return spannableStringBuilder;
     }
