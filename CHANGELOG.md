@@ -1,3 +1,9 @@
+## VERSION 4.24.0
+_10_10_2019_
+* ENHANCEMENT - Refactored fonts usage
+* ENHANCEMENT - refactored utils
+* FIX - Fixed margins in congrats components
+
 ## VERSION 4.23.1
 _02_10_2019_
 * FEATURE - Added receiptIdList in BusinessPayment

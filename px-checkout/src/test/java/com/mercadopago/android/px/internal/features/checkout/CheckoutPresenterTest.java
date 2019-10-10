@@ -84,7 +84,6 @@ public class CheckoutPresenterTest {
         presenter.initialize();
 
         verify(checkoutView).showProgress();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showError(any(MercadoPagoError.class));
         verifyNoMoreInteractions(checkoutView);
     }
@@ -124,7 +123,6 @@ public class CheckoutPresenterTest {
         when(paymentProcessor.shouldSkipUserConfirmation()).thenReturn(false);
 
         presenter.onPaymentMethodSelected();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showReviewAndConfirm(false);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -139,7 +137,6 @@ public class CheckoutPresenterTest {
         when(paymentProcessor.shouldSkipUserConfirmation()).thenReturn(true);
 
         presenter.onPaymentMethodSelected();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showPaymentProcessorWithAnimation();
         verify(checkoutView, never()).showReviewAndConfirm(anyBoolean());
         verifyNoMoreInteractions(checkoutView);
@@ -173,7 +170,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCardFlowCancel();
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -185,7 +181,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCardFlowCancel();
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -197,7 +192,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCardFlowCancel();
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showPaymentMethodSelection();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -209,7 +203,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCardFlowCancel();
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showPaymentMethodSelection();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -242,7 +235,6 @@ public class CheckoutPresenterTest {
     public void whenPaymentIsCanceledBecauseUserWantsToSelectOtherPaymentMethodThenShowPaymentMethodSelection() {
         presenter.onChangePaymentMethod();
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).transitionOut();
         verify(checkoutView).showPaymentMethodSelection();
         verifyNoMoreInteractions(checkoutView);
@@ -285,7 +277,6 @@ public class CheckoutPresenterTest {
         final RecoverPaymentPostPaymentAction action = new RecoverPaymentPostPaymentAction();
         action.execute(presenter);
 
-        verify(checkoutView).fetchFonts();
         verifyNoMoreInteractions(checkoutView);
     }
 
@@ -335,7 +326,6 @@ public class CheckoutPresenterTest {
         presenter.onCardFlowResponse();
 
         verify(paymentRepository).hasPayment();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showReviewAndConfirm(false);
         verifyNoMoreInteractions(checkoutView);
         verifyNoMoreInteractions(paymentRepository);
@@ -355,7 +345,6 @@ public class CheckoutPresenterTest {
         presenter.onCardFlowResponse();
 
         verify(paymentRepository).hasPayment();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showPaymentProcessorWithAnimation();
         verify(checkoutView, never()).showReviewAndConfirm(anyBoolean());
         verifyNoMoreInteractions(checkoutView);
@@ -435,7 +424,6 @@ public class CheckoutPresenterTest {
         presenter.onChangePaymentMethodFromReviewAndConfirm();
         presenter.onPaymentMethodSelectionError(mercadoPagoError);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).transitionOut();
         verify(checkoutView).showPaymentMethodSelection();
         verify(checkoutView).cancelCheckout(mercadoPagoError);
@@ -449,7 +437,6 @@ public class CheckoutPresenterTest {
 
         presenter.onPaymentMethodSelectionError(mercadoPagoError);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout(mercadoPagoError);
 
         verifyNoMoreInteractions(checkoutView);
@@ -462,7 +449,6 @@ public class CheckoutPresenterTest {
 
         presenter.onErrorCancel(mpException);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showPaymentMethodSelection();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -474,7 +460,6 @@ public class CheckoutPresenterTest {
 
         presenter.onErrorCancel(mpException);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -511,7 +496,6 @@ public class CheckoutPresenterTest {
     public void whenCancelRegularCheckoutThenCancelCheckout() {
         presenter.cancelCheckout();
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -524,7 +508,6 @@ public class CheckoutPresenterTest {
         when(paymentSettingRepository.getSite()).thenReturn(Sites.ARGENTINA);
         presenter.onPaymentError(mercadoPagoError);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).hideProgress();
         verify(checkoutView).showPaymentResult(any(PaymentModel.class));
         verifyNoMoreInteractions(checkoutView);
@@ -537,7 +520,6 @@ public class CheckoutPresenterTest {
 
         presenter.onPaymentError(mercadoPagoError);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).hideProgress();
         verify(checkoutView).showError(any(MercadoPagoError.class));
         verifyNoMoreInteractions(checkoutView);
@@ -549,7 +531,6 @@ public class CheckoutPresenterTest {
 
         presenter.onPaymentError(mercadoPagoError);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).hideProgress();
         verify(checkoutView).showError(any(MercadoPagoError.class));
         verifyNoMoreInteractions(checkoutView);
@@ -559,7 +540,6 @@ public class CheckoutPresenterTest {
     public void whenTerminalErrorThenCancelCheckout() {
         final MercadoPagoError mercadoPagoError = mock(MercadoPagoError.class);
         presenter.onTerminalError(mercadoPagoError);
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout(mercadoPagoError);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -568,7 +548,6 @@ public class CheckoutPresenterTest {
     public void whenReviewAndConfirmErrorThenCancelCheckout() {
         final MercadoPagoError mercadoPagoError = mock(MercadoPagoError.class);
         presenter.onReviewAndConfirmError(mercadoPagoError);
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout(mercadoPagoError);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -576,7 +555,6 @@ public class CheckoutPresenterTest {
     @Test
     public void whenCustomReviewAndConfirmResponseThenCancelCheckout() {
         presenter.onCustomReviewAndConfirmResponse(CUSTOM_RESULT_CODE);
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).cancelCheckout(eq(CUSTOM_RESULT_CODE), anyBoolean());
         verifyNoMoreInteractions(checkoutView);
     }
@@ -589,7 +567,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCustomPaymentResultResponse(CUSTOM_RESULT_CODE);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).finishWithPaymentResult(CUSTOM_RESULT_CODE, payment);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -600,7 +577,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCustomPaymentResultResponse(CUSTOM_RESULT_CODE);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).finishWithPaymentResult(CUSTOM_RESULT_CODE);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -613,7 +589,6 @@ public class CheckoutPresenterTest {
 
         presenter.onCustomPaymentResultResponse(CUSTOM_RESULT_CODE);
 
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).finishWithPaymentResult(CUSTOM_RESULT_CODE);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -621,7 +596,6 @@ public class CheckoutPresenterTest {
     @Test
     public void whenFailureRecoveryNotSetThenShowFailureRecoveryError() {
         presenter.recoverFromFailure();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showFailureRecoveryError();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -629,7 +603,6 @@ public class CheckoutPresenterTest {
     @Test
     public void whenExitWithCodeThenExitCheckout() {
         presenter.exitWithCode(CUSTOM_RESULT_CODE);
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).exitCheckout(CUSTOM_RESULT_CODE);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -638,7 +611,6 @@ public class CheckoutPresenterTest {
     public void whenCvvRequiredThenShowSavedCardFlow() {
         final Card card = mock(Card.class);
         presenter.onCvvRequired(card);
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showSavedCardFlow(card);
         verifyNoMoreInteractions(checkoutView);
     }
@@ -646,7 +618,6 @@ public class CheckoutPresenterTest {
     @Test
     public void whenVisualPaymentConfiguredThenShowPaymentProcessor() {
         presenter.onVisualPayment();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView).showPaymentProcessor();
         verifyNoMoreInteractions(checkoutView);
     }
@@ -671,7 +642,6 @@ public class CheckoutPresenterTest {
 
     private void verifyInitializeWithPreference() {
         verify(checkoutView).showProgress();
-        verify(checkoutView).fetchFonts();
         verify(checkoutView, atLeastOnce()).showPaymentMethodSelection();
     }
 
@@ -714,7 +684,6 @@ public class CheckoutPresenterTest {
     }
 
     private void verifyShowOneTap() {
-        verify(checkoutView).fetchFonts();
         verify(checkoutView, atLeastOnce()).hideProgress();
         verify(checkoutView).showOneTap();
     }
