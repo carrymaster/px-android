@@ -71,8 +71,6 @@ public class BodyError extends CompactComponent<BodyErrorProps, ActionDispatcher
             bodyErrorDescriptionDivider.setVisibility(View.VISIBLE);
         }
 
-        ViewUtils.stretchHeight(bodyViewGroup);
-
         return bodyErrorView;
     }
 }

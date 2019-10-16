@@ -54,7 +54,6 @@ public class PaymentResultHeaderModelMapper extends Mapper<PaymentResult, Paymen
             .setTitle(new GenericLocalized(TextUtil.isNotEmpty(getInstructionsTitle()) ? getInstructionsTitle() : null,
                 viewModel.getTitleResId()))
             .setLabel(new GenericLocalized(null, viewModel.getLabelResId()))
-            .setSuccess(viewModel.isApprovedSuccess())
             .build();
     }
 

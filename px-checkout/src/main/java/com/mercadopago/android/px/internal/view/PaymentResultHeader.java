@@ -18,6 +18,11 @@ import com.squareup.picasso.Picasso;
 
 public class PaymentResultHeader extends ConstraintLayout {
 
+    private final MPTextView title;
+    private final MPTextView label;
+    private final ImageView icon;
+    private final ImageView badge;
+
     public PaymentResultHeader(final Context context) {
         this(context, null);
     }
@@ -28,31 +33,23 @@ public class PaymentResultHeader extends ConstraintLayout {
 
     public PaymentResultHeader(final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        inflate(getContext(), R.layout.px_payment_result_header, this);
+        title = findViewById(R.id.title);
+        label = findViewById(R.id.label);
+        icon = findViewById(R.id.icon);
+        badge = findViewById(R.id.badge);
     }
 
     public void setModel(@NonNull final Model model) {
-        if (model.isSuccess) {
-            inflate(getContext(), R.layout.px_payment_result_header_success, this);
-        } else {
-            inflate(getContext(), R.layout.px_payment_result_header, this);
-        }
-        final int background = ContextCompat.getColor(getContext(), model.background);
-        final MPTextView title = findViewById(R.id.title);
-        final MPTextView label = findViewById(R.id.label);
-        final ImageView icon = findViewById(R.id.icon);
-        final ImageView badge = findViewById(R.id.badge);
-
         if (model.dynamicHeight) {
             ViewUtils.stretchHeight(this);
         } else {
             ViewUtils.wrapHeight(this);
         }
 
-        setBackgroundColor(background);
+        setBackgroundColor(ContextCompat.getColor(getContext(), model.background));
         ViewUtils.loadOrGone(model.title.get(getContext()), title);
-        if (label != null) {
-            ViewUtils.loadOrGone(model.label.get(getContext()), label);
-        }
+        ViewUtils.loadOrGone(model.label.get(getContext()), label);
         renderIcon(icon, model);
         ViewUtils.loadOrGone(model.badgeImage, badge);
     }
@@ -78,7 +75,6 @@ public class PaymentResultHeader extends ConstraintLayout {
         /* default */ final String iconUrl;
         /* default */ final GenericLocalized title;
         /* default */ final GenericLocalized label;
-        /* default */ final boolean isSuccess;
 
         /* default */ Model(@NonNull final Builder builder) {
             dynamicHeight = builder.dynamicHeight;
@@ -88,7 +84,6 @@ public class PaymentResultHeader extends ConstraintLayout {
             badgeImage = builder.badgeImage;
             title = builder.title;
             label = builder.label;
-            isSuccess = builder.isSuccess;
         }
 
         @ColorRes
@@ -104,7 +99,6 @@ public class PaymentResultHeader extends ConstraintLayout {
             @Nullable /* default */ String iconUrl;
             /* default */ GenericLocalized title;
             /* default */ GenericLocalized label;
-            /* default */ boolean isSuccess;
 
             public Builder setBackground(@DrawableRes final int background) {
                 this.background = background;
@@ -138,11 +132,6 @@ public class PaymentResultHeader extends ConstraintLayout {
 
             public Builder setLabel(@NonNull final GenericLocalized label) {
                 this.label = label;
-                return this;
-            }
-
-            public Builder setSuccess(final boolean isSuccess) {
-                this.isSuccess = isSuccess;
                 return this;
             }
 

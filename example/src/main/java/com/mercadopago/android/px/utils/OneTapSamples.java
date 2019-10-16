@@ -100,7 +100,7 @@ public final class OneTapSamples {
     // It should suggest one tap with credit card, call for authorize
     private static MercadoPagoCheckout.Builder startOneTapWithCreditCardAndShowCallForAuthorize() {
         final GenericPayment payment = new GenericPayment.Builder(Payment.StatusCodes.STATUS_REJECTED,
-            Payment.StatusDetail.STATUS_DETAIL_CC_REJECTED_CALL_FOR_AUTHORIZE).setPaymentId(123L)
+            Payment.StatusDetail.STATUS_DETAIL_CC_REJECTED_OTHER_REASON).setPaymentId(123L)
             .createGenericPayment();
         final SplitPaymentProcessor samplePaymentProcessor = new SamplePaymentProcessorNoView(payment);
         final Collection<String> excludedPaymentTypes = new ArrayList<>();

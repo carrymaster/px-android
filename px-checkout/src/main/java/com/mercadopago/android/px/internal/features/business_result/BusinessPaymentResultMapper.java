@@ -62,7 +62,6 @@ public class BusinessPaymentResultMapper extends Mapper<BusinessPaymentModel, Bu
             .setBadgeImage(type.badge)
             .setTitle(new GenericLocalized(payment.getTitle(), 0))
             .setLabel(new GenericLocalized(payment.getSubtitle(), type.message))
-            .setSuccess(type == PaymentResultType.APPROVED)
             .build();
     }
 }

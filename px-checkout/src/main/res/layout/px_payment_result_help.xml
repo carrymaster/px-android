@@ -4,19 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingTop="@dimen/px_l_margin"
     android:paddingBottom="@dimen/px_l_margin"
-    android:paddingEnd="@dimen/px_xl_margin"
-    android:paddingLeft="@dimen/px_xl_margin"
-    android:paddingRight="@dimen/px_xl_margin"
-    android:paddingStart="@dimen/px_xl_margin">
+    android:paddingEnd="@dimen/px_l_margin"
+    android:paddingStart="@dimen/px_l_margin">
 
     <com.mercadopago.android.px.internal.view.MPTextView
         android:id="@+id/help_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/px_l_margin"
-        android:gravity="center_horizontal"
         android:textColor="@color/ui_meli_black"
         android:textSize="@dimen/px_l_text"
         tools:text="Title"/>
@@ -25,9 +21,7 @@
         android:id="@+id/help_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/px_s_margin"
-        android:gravity="center_horizontal"
         android:textColor="@color/ui_meli_dark_grey"
         android:textSize="@dimen/px_s_text"
         tools:text="Description"/>
