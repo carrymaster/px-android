@@ -1,3 +1,7 @@
+## VERSION 4.26.0
+_17_10_2019_
+* FEATURE - Updated UI to 8.+
+
 ## VERSION 4.25.1
 _17_10_2019_
 * FIX - Restored deleted colors used by Money In

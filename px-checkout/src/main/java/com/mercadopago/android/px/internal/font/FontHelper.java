@@ -12,6 +12,7 @@ import android.support.v4.provider.FontRequest;
 import android.support.v4.provider.FontsContractCompat;
 import android.util.SparseArray;
 import android.widget.TextView;
+
 import com.mercadolibre.android.ui.font.TypefaceHelper;
 import com.mercadopago.android.px.R;
 
@@ -67,7 +68,7 @@ public final class FontHelper {
         if (typeface != null) {
             callback.onFontRetrieved(typeface);
         } else {
-            TypefaceHelper.getTypeface(context, font.font, callback);
+            TypefaceHelper.geyFontTypeface(context, font.font);
         }
     }
 
