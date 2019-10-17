@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.mercadolibre.android.ui.font.TypefaceHelper;
 import com.mercadopago.android.px.R;
 
+import static android.support.v4.provider.FontsContractCompat.FontRequestCallback.FAIL_REASON_FONT_NOT_FOUND;
+
 public final class FontHelper {
 
     private static final String FONT_ROBOTO_MONO = "Roboto Mono";
@@ -64,11 +66,20 @@ public final class FontHelper {
 
     public static void getFont(@NonNull final Context context, @NonNull final PxFont font,
         @NonNull final ResourcesCompat.FontCallback callback) {
-        final Typeface typeface = CACHE.get(font.id);
-        if (typeface != null) {
-            callback.onFontRetrieved(typeface);
+        final Typeface cacheTypeface = CACHE.get(font.id);
+        if (cacheTypeface != null) {
+            callback.onFontRetrieved(cacheTypeface);
         } else {
-            TypefaceHelper.geyFontTypeface(context, font.font);
+            findFont(context, font, callback);
+        }
+    }
+
+    private static void findFont(@NonNull Context context, @NonNull PxFont font, @NonNull ResourcesCompat.FontCallback callback) {
+        Typeface typeface = TypefaceHelper.geyFontTypeface(context, font.font);
+        if (typeface == null) {
+            callback.onFontRetrievalFailed(FAIL_REASON_FONT_NOT_FOUND);
+        } else {
+            callback.onFontRetrieved(typeface);
         }
     }
 
