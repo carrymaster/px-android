@@ -271,7 +271,7 @@ public final class PaymentResultViewModelFactory {
                 .setHasDetail(true);
 
         case STATUS_DETAIL_REJECTED_REJECTED_BY_BANK:
-        case STATUS_DETAIL_REJECTED_REJECTED_INSUFFICIENT_DATA:
+        case A:
             setNonRecoverableErrorResources(builder);
             return builder
                 .setTitleResId(R.string.px_bolbradesco_rejection)

@@ -118,17 +118,8 @@ public class ErrorActivity extends PXActivity {
             case ApiException.ErrorCodes.INVALID_CARD_HOLDER_NAME:
                 message = context.getString(R.string.px_invalid_card_holder_name);
                 break;
-            case ApiException.ErrorCodes.UNAUTHORIZED_CLIENT:
-                message = context.getString(R.string.px_unauthorized_client);
-                break;
             case ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND:
                 message = context.getString(R.string.px_payment_method_not_found);
-                break;
-            case ApiException.ErrorCodes.INVALID_SECURITY_CODE:
-                message = context.getString(R.string.px_invalid_security_code);
-                break;
-            case ApiException.ErrorCodes.SECURITY_CODE_REQUIRED:
-                message = context.getString(R.string.px_security_code_required);
                 break;
             case ApiException.ErrorCodes.INVALID_PAYMENT_METHOD:
                 message = context.getString(R.string.px_invalid_payment_method);
@@ -159,9 +150,6 @@ public class ErrorActivity extends PXActivity {
                 break;
             case ApiException.ErrorCodes.INVALID_CARD_EXPIRATION_MONTH:
                 message = context.getString(R.string.px_invalid_card_expiration_month);
-                break;
-            case ApiException.ErrorCodes.INVALID_CARD_EXPIRATION_YEAR:
-                message = context.getString(R.string.px_invalid_card_expiration_year);
                 break;
             case ApiException.ErrorCodes.INVALID_PAYER_EMAIL:
                 message = context.getString(R.string.px_invalid_payer_email);

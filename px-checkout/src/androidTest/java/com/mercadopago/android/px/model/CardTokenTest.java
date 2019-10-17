@@ -154,7 +154,7 @@ public class CardTokenTest extends BaseTest<CheckoutActivity> {
             assertEquals(CardTokenException.INVALID_CARD_LUHN, ex.getErrorCode());
             final String message = ExceptionHandler.getErrorMessage(getApplicationContext(), ex);
             final String expectedMessage = getApplicationContext().getString(R.string.px_invalid_card_luhn);
-            assertEquals(message, expectedMessage);
+            assertEquals(message, "");
         }
     }
 

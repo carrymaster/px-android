@@ -66,7 +66,6 @@
     <string name="px_security_code">Código de segurança</string>
 
     <string name="px_invalid_card_bin">O número do cartão que você digitou não coincide com o tipo de cartão</string>
-    <string name="px_invalid_card_luhn">O número do cartão que você digitou está incorreto</string>
     <string name="px_invalid_card_length">Digite os %1$s números do cartão</string>
     <string name="px_invalid_cvv_length">Digite os %1$s números do código de segurança</string>
     <string name="px_invalid_field">Revise este dado</string>
@@ -122,7 +121,6 @@
     <string name="px_title_rejection_blacklist">Recusamos seu pagamento com este cartão</string>
     <string name="px_title_rejection_fraud">Você está suspenso para pagar</string>
     <string name="px_rejection_label">Algo deu errado…</string>
-    <string name="px_text_card_data_invalid">Revisar os dados do cartão</string>
     <string name="px_error_description_call">1- Ligue para o telefone no verso do seu cartão para autorizar o pagamento de %1$s para o Mercado Pago. \n 2- Por favor, avise-nos para que possamos creditá-lo.</string>
     <string name="px_error_bad_filled_action">Inserir os dados do cartão novamente</string>
     <string name="px_error_description_card_disabled">Ligue para o %1$s para desbloquear seu cartão ou use outro meio de pagamento.</string>
@@ -158,17 +156,13 @@
     <string name="px_empty_document_type">O tipo de documento do titular do cartão não foi digitado</string>
     <string name="px_invalid_payment_type_id">Tipo do meio de pagamento inválido</string>
     <string name="px_invalid_card_expiration_month">Mês de validade do cartão inválido</string>
-    <string name="px_invalid_card_expiration_year">Ano de validade do cartão inválido</string>
     <string name="px_invalid_payer_email">E-mail do cliente inválido</string>
     <string name="px_customer_not_allowed_to_operate">Você não tem permissão para operar</string>
     <string name="px_collector_not_allowed_to_operate">O vendedor não tem permissão para operar</string>
     <string name="px_invalid_users_involved">Os usuários envolvidos não são válidos</string>
     <string name="px_customer_equal_to_collector">Mesmo usuário cliente e vendedor</string>
     <string name="px_invalid_card_holder_name">O nome do titular do cartão está incorreto</string>
-    <string name="px_unauthorized_client">Cliente não autorizado</string>
     <string name="px_payment_method_not_found">Não encontramos o meio de pagamento selecionado</string>
-    <string name="px_invalid_security_code">Código de segurança inválido</string>
-    <string name="px_security_code_required">Código de segurança obrigatório</string>
     <string name="px_invalid_card_number">Número do cartão inválido</string>
     <string name="px_api_invalid_identification_number">O número de identificação é inválido</string>
 
@@ -204,15 +198,6 @@
     <!-- Review and Confirm -->
     <string name="px_change_payment">Alterar meio de pagamento</string>
     <string name="px_add_new_card">Adicionar um novo cartão</string>
-    <string name="px_review_off_text_default">Você pagará %1$s\n%2$s</string>
-    <string name="px_review_off_text">Você pagará %1$s com\n%2$s</string>
-    <string name="px_review_off_text_2">Você pagará %1$s no\n%2$s</string>
-    <string name="px_review_off_text_3">Você pagará %1$s no\n%2$s</string>
-    <string name="px_review_off_text_4">Você pagará %1$s com\n%2$s</string>
-    <string name="px_review_off_text_5">Você pagará %1$s por\n%2$s</string>
-    <string name="px_review_off_text_6">Você pagará %1$s em\n%2$s</string>
-    <string name="px_homebanking">Internet Banking de</string>
-    <string name="px_your_atm">caixa eletrônico de</string>
     <string name="px_review_item_quantity">Quantidade:</string>
     <string name="px_review_product_price">Preço unitário: %1$s</string>
     <string name="px_activity_checkout_title">Revise se está tudo correto</string>
@@ -222,11 +207,9 @@
     <string name="px_review_summary_taxes">Impostos</string>
     <string name="px_review_summary_shipping">Remessa</string>
     <string name="px_review_summary_arrear">Atraso</string>
-    <string name="px_review_summary_subtotal">Subtotal</string>
     <string name="px_review_summary_pay">Você paga</string>
     <string name="px_review_summary_total">Total</string>
     <string name="px_review_summary_discount">Desconto</string>
-    <string name="px_ryc_account_money_description">Com dinheiro em conta</string>
 
     <!-- Discount -->
     <string name="px_we_apply_the_best_available_discount">Os descontos não são acumulativos. Aplicamos o mais alto para este pagamento.</string>

@@ -61,11 +61,10 @@ public final class ErrorUtil {
     }
 
     public static void showApiExceptionError(@NonNull final Activity activity,
-        final ApiException apiException,
-        final String requestOrigin) {
+        final ApiException apiException, final String requestOrigin) {
 
-        MercadoPagoError mercadoPagoError;
-        String errorMessage;
+        final MercadoPagoError mercadoPagoError;
+        final String errorMessage;
 
         if (!ApiUtil.checkConnection(activity)) {
             errorMessage = activity.getString(R.string.px_no_connection_message);

@@ -110,7 +110,6 @@
     <string name="px_title_other_reason_rejection">No pudimos procesar tu pago</string>
     <string name="px_title_duplicated_reason_rejection">Lo sentimos, el pago se hizo dos veces y rechazamos el segundo</string>
     <string name="px_text_some_card_data_is_incorrect">Algún dato de la tarjeta es inválido</string>
-    <string name="px_text_card_data_invalid">Revisar los datos de tarjeta</string>
     <string name="px_text_card_enabled">Ya activé mi tarjeta</string>
     <string name="px_title_bad_filled_other">Algún dato de la tarjeta es inválido</string>
     <string name="px_text_how_can_authorize">¿Cómo lo autorizo?</string>
@@ -157,17 +156,13 @@
     <string name="px_empty_document_type">No se ingresó el tipo de documento del titular de la tarjeta</string>
     <string name="px_invalid_payment_type_id">Tipo de medio de pago inválido</string>
     <string name="px_invalid_card_expiration_month">Mes de expiración de la tarjeta inválido</string>
-    <string name="px_invalid_card_expiration_year">Año de expiración de la tarjeta inválido</string>
     <string name="px_invalid_payer_email">Email del cliente inválido</string>
     <string name="px_customer_not_allowed_to_operate">No tienes permitido operar</string>
     <string name="px_collector_not_allowed_to_operate">El vendedor no tiene permitido operar</string>
     <string name="px_invalid_users_involved">Usuarios no válidos involucrados</string>
     <string name="px_customer_equal_to_collector">Mismo usuario cliente y vendedor</string>
     <string name="px_invalid_card_holder_name">Nombre del titular de la tarjeta inválido</string>
-    <string name="px_unauthorized_client">Cliente no autorizado</string>
     <string name="px_payment_method_not_found">No encontramos el medio de pago seleccionado</string>
-    <string name="px_invalid_security_code">Código de seguridad inválido</string>
-    <string name="px_security_code_required">Código de seguridad requerido</string>
     <string name="px_invalid_card_number">Número de tarjeta inválido</string>
     <string name="px_api_invalid_identification_number">El número de identificación es inválido</string>
 
@@ -203,15 +198,6 @@
     <!-- Review and Confirm -->
     <string name="px_change_payment">Cambiar medio de pago</string>
     <string name="px_add_new_card">Agregar una tarjeta nueva</string>
-    <string name="px_review_off_text_default">Pagarás %1$s\n%2$s</string>
-    <string name="px_review_off_text">Pagarás %1$s en un\n%2$s</string>
-    <string name="px_review_off_text_2">Pagarás %1$s en\n%2$s</string>
-    <string name="px_review_off_text_3">Pagarás %1$s en tu\n%2$s</string>
-    <string name="px_review_off_text_4">Pagarás %1$s con\n%2$s</string>
-    <string name="px_review_off_text_5">Pagarás %1$s por\n%2$s</string>
-    <string name="px_review_off_text_6">Pagarás %1$s en\n%2$s</string>
-    <string name="px_homebanking">Home Banking de</string>
-    <string name="px_your_atm">cajero automático de</string>
     <string name="px_review_item_quantity">Cantidad:</string>
     <string name="px_review_product_price">Precio unitario: %1$s</string>
     <string name="px_activity_checkout_title">Revisa si está todo bien</string>
@@ -223,9 +209,7 @@
     <string name="px_review_summary_arrear">Mora</string>
     <string name="px_review_summary_pay">Pagas</string>
     <string name="px_review_summary_total">Total</string>
-    <string name="px_review_summary_subtotal">Subtotal</string>
     <string name="px_review_summary_discount">Descuento</string>
-    <string name="px_ryc_account_money_description">Con dinero en cuenta</string>
 
     <!-- Discount -->
     <string name="px_we_apply_the_best_available_discount">Los descuentos no son acumulables. Te damos el más alto para este pago.</string>
